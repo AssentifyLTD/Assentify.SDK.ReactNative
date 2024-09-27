@@ -1,5 +1,5 @@
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
-import { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { NativeModules, NativeEventEmitter } from 'react-native';
 import { PAGES } from '../helpers/constants';
 import type { TemplatesByCountry } from '../types';

@@ -69,7 +69,7 @@ const SelectDocument: React.FC<Props> = () => {
   useEffect(() => {
     if (supportedCountries) {
       const seletedCountry = supportedCountries?.find(
-        (item) => item.sourceCountryCode === countryCode ?? 'LB'
+        (item) => item.sourceCountryCode === (countryCode ?? 'LB')
       );
       if (seletedCountry) {
         const templates = seletedCountry?.templates;
