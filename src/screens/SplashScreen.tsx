@@ -1,12 +1,10 @@
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
-import React, { useCallback, useEffect } from 'react';
-import BaseIcon from '../components/BaseIcon/BaseIcon';
+import { useCallback, useEffect } from 'react';
 import { NativeModules, NativeEventEmitter } from 'react-native';
 import { PAGES } from '../helpers/constants';
 import type { TemplatesByCountry } from '../types';
 import type { CountryCode } from 'react-native-country-picker-modal';
 import useGlobalStore from '../useGlobalStore';
-import { COLORS } from '../themes';
 import NavigationService from '../helpers/NavigationService';
 
 const { AssentifySdk } = NativeModules;
