@@ -26,5 +26,6 @@ Pod::Spec.new do |s|
   s.resources = ["ios/id_card_rotation.mp4"]
 
   s.dependency "React-Core"
-  s.dependency "AssentifySdk" , '~> 0.0.14'
+  s.dependency "AssentifySdk", '0.0.14'
+
 end

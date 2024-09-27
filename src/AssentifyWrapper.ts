@@ -7,8 +7,8 @@ const LINKING_ERROR =
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
 
-const AssentifySdk = NativeModules.AssentifySdk
-  ? NativeModules.AssentifySdk
+const AssentifySdk = NativeModules.NativeAssentifySdk
+  ? NativeModules.NativeAssentifySdk
   : new Proxy(
       {},
       {

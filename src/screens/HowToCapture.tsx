@@ -14,7 +14,7 @@ import { NativeModules } from 'react-native';
 import useGlobalStore from '../useGlobalStore';
 import NavigationService from '../helpers/NavigationService';
 
-const { AssentifySdk } = NativeModules;
+const { NativeAssentifySdk } = NativeModules;
 
 type Props = {};
 
@@ -23,11 +23,11 @@ const HowToCapture: React.FC<Props> = () => {
 
   const onStart = () => {
     if (docType === DOC_TYPE.PASSPORT) {
-      AssentifySdk.startScanPassport();
+      NativeAssentifySdk.startScanPassport();
     } else if (docType === DOC_TYPE.CIVIL_ID) {
-      AssentifySdk.startScanIDPage(JSON.stringify(kycDocumentDetails));
+      NativeAssentifySdk.startScanIDPage(JSON.stringify(kycDocumentDetails));
     } else if (docType === DOC_TYPE.OTHER) {
-      AssentifySdk.startScanOtherIDPage();
+      NativeAssentifySdk.startScanOtherIDPage();
     }
     // navigation.navigate(PAGES.SCANNER);
     // navigation.navigate(PAGES.SCAN_FAILED);

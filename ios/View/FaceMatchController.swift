@@ -12,13 +12,13 @@ class FaceMAtchController: UIViewController ,FaceMatchDelegate
     weak var delegate: ChildViewControllerDelegate?
     private var assentifySdk:AssentifySdk?;
     private var secondImage:String = "";
-    private var baseAssentifySdk:BaseAssentifySdk?;
+    private var nativeAssentifySdk:NativeAssentifySdk?;
     private var start:Bool = false;
     var infoLabel : UILabel?;
-    init(assentifySdk: AssentifySdk, baseAssentifySdk:BaseAssentifySdk?,secondImage:String,delegate:ChildViewControllerDelegate) {
+    init(assentifySdk: AssentifySdk, nativeAssentifySdk:NativeAssentifySdk?,secondImage:String,delegate:ChildViewControllerDelegate) {
           self.assentifySdk = assentifySdk
           self.secondImage = secondImage
-          self.baseAssentifySdk = baseAssentifySdk
+          self.nativeAssentifySdk = nativeAssentifySdk
           self.delegate = delegate
           super.init(nibName: nil, bundle: nil)
       }
@@ -179,7 +179,7 @@ class FaceMAtchController: UIViewController ,FaceMatchDelegate
                 "brightness": brightness
             ]
             let result: [String: Any] =  ["FaceMatchDataModel": eventResultMap]
-            self.baseAssentifySdk?.sendEvent(withName: "onEnvironmentalConditionsChange", body: result)
+            self.nativeAssentifySdk?.sendEvent(withName: "onEnvironmentalConditionsChange", body: result)
         }
     }
 
@@ -193,7 +193,7 @@ class FaceMAtchController: UIViewController ,FaceMatchDelegate
             eventResultMap =   ["FaceMatchDataModel": dataModel?.response as Any]
         }
         DispatchQueue.main.async {
-            self.baseAssentifySdk?.sendEvent(withName: eventName, body: eventResultMap)
+            self.nativeAssentifySdk?.sendEvent(withName: eventName, body: eventResultMap)
         }
 
     }
@@ -205,7 +205,7 @@ class FaceMAtchController: UIViewController ,FaceMatchDelegate
             eventResultMap =   ["FaceMatchDataModel": faceModelToJsonString(dataModel: dataModel)  as Any]
         }
         DispatchQueue.main.async {
-            self.baseAssentifySdk?.sendEvent(withName: eventName, body: eventResultMap)
+            self.nativeAssentifySdk?.sendEvent(withName: eventName, body: eventResultMap)
         }
 
     }

@@ -9,12 +9,12 @@ class OtherController: UIViewController ,ScanOtherDelegate , ChildViewController
 
     private var isDone:Bool = false;
     private var assentifySdk:AssentifySdk?;
-    private var baseAssentifySdk:BaseAssentifySdk?;
+    private var nativeAssentifySdk:NativeAssentifySdk?;
     private var start:Bool = false;
     var infoLabel : UILabel?;
-    init(assentifySdk: AssentifySdk,baseAssentifySdk:BaseAssentifySdk) {
+    init(assentifySdk: AssentifySdk,nativeAssentifySdk:NativeAssentifySdk) {
           self.assentifySdk = assentifySdk
-          self.baseAssentifySdk = baseAssentifySdk
+          self.nativeAssentifySdk = nativeAssentifySdk
           super.init(nibName: nil, bundle: nil)
       }
 
@@ -111,7 +111,7 @@ class OtherController: UIViewController ,ScanOtherDelegate , ChildViewController
                     DispatchQueue.main.async {
                         if let currentViewController = UIViewController.currentViewController {
                             let viewController = FaceMAtchController(assentifySdk: self.assentifySdk!,
-                                                                     baseAssentifySdk: self.baseAssentifySdk,
+                                                                     nativeAssentifySdk: self.nativeAssentifySdk,
                                                                      secondImage:base64String,delegate: self)
                             viewController.modalPresentationStyle = .fullScreen
                             currentViewController.present(viewController, animated: true, completion: nil)
@@ -200,7 +200,7 @@ class OtherController: UIViewController ,ScanOtherDelegate , ChildViewController
                 "brightness": brightness
             ]
             var result: [String: Any] =  ["OtherDataModel": eventResultMap]
-            self.baseAssentifySdk?.sendEvent(withName: "onEnvironmentalConditionsChange", body: result)
+            self.nativeAssentifySdk?.sendEvent(withName: "onEnvironmentalConditionsChange", body: result)
         }
 
     }
@@ -216,7 +216,7 @@ class OtherController: UIViewController ,ScanOtherDelegate , ChildViewController
             ]
         }
         DispatchQueue.main.async {
-            self.baseAssentifySdk?.sendEvent(withName: eventName, body: eventResultMap)
+            self.nativeAssentifySdk?.sendEvent(withName: eventName, body: eventResultMap)
         }
 
     }
@@ -229,7 +229,7 @@ class OtherController: UIViewController ,ScanOtherDelegate , ChildViewController
             ]
         }
         DispatchQueue.main.async {
-            self.baseAssentifySdk?.sendEvent(withName: eventName, body: eventResultMap)
+            self.nativeAssentifySdk?.sendEvent(withName: eventName, body: eventResultMap)
         }
 
     }

@@ -12,13 +12,13 @@ npm install @me/assentify-sdk
 yarn add @me/assentify-sdk
 ```
 
-## Usage
+## Usag
 
 ```js
   import { Assentify } from '@me/assentify-sdk';
   import { View, NativeModules } from 'react-native';
 
-  const { AssentifySdk } = NativeModules;
+  const { NativeAssentifySdk } = NativeModules;
 
   const apiKey = 'YOUR_API_KEY';
   const tenantIdentifier = 'YOUR_TENANT_IDENTIFIER';

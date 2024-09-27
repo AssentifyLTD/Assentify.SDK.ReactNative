@@ -3,8 +3,8 @@ import UIKit
 import Foundation
 import AssentifySdk
 
-@objc(BaseAssentifySdk)
-class BaseAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDelegate{
+@objc(NativeAssentifySdk)
+class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDelegate{
 
 
     private var assentifySdk :AssentifySdk?
@@ -161,7 +161,7 @@ class BaseAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDeleg
 
             self.timeStarted =  self.getTimeUTC();
             if let currentViewController = UIViewController.currentViewController {
-                let viewController = PassportController(assentifySdk: self.assentifySdk!,baseAssentifySdk: self)
+                let viewController = PassportController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self)
                 viewController.modalPresentationStyle = .fullScreen
                 currentViewController.present(viewController, animated: true, completion: nil)
             }
@@ -173,7 +173,7 @@ class BaseAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDeleg
         DispatchQueue.main.async {
             self.timeStarted =  self.getTimeUTC();
             if let currentViewController = UIViewController.currentViewController {
-                let viewController = OtherController(assentifySdk: self.assentifySdk!,baseAssentifySdk: self)
+                let viewController = OtherController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self)
                 viewController.modalPresentationStyle = .fullScreen
                 currentViewController.present(viewController, animated: true, completion: nil)
             }
@@ -193,8 +193,7 @@ class BaseAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDeleg
                  let viewController = IDCardController(
                      assentifySdk: self.assentifySdk!,
                      kycDocumentDetails:kycDocumentDetails as Any as! [KycDocumentDetails],
-
-                     baseAssentifySdk: self)
+                     nativeAssentifySdk: self)
                  viewController.modalPresentationStyle = .fullScreen
                  currentViewController.present(viewController, animated: true, completion: nil)
              }

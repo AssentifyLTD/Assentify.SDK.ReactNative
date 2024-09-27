@@ -1,7 +1,7 @@
 #import <React/RCTBridgeModule.h>
 #import "React/RCTEventEmitter.h"
 
-@interface RCT_EXTERN_MODULE(BaseAssentifySdk, RCTEventEmitter)
+@interface RCT_EXTERN_MODULE(NativeAssentifySdk, RCTEventEmitter)
 
 RCT_EXTERN_METHOD(initialize: (NSString *)apiKey
                   tenantIdentifier:(NSString *)tenantIdentifier

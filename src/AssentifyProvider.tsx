@@ -56,7 +56,7 @@ import { onWrongTemplateCallback } from './helpers/callbacks/onWrongTemplate';
 import { DOC_TYPE, PAGES } from './helpers/constants';
 import NavigationService from './helpers/NavigationService';
 
-const { AssentifySdk } = NativeModules;
+const { NativeAssentifySdk } = NativeModules;
 
 const AssentifyContext = createContext<undefined>(undefined);
 
@@ -150,7 +150,7 @@ const AssentifyProvider = () => {
 
         const params = {
         };
-        AssentifySdk.submitData(params);
+        NativeAssentifySdk.submitData(params);
       }
     },
     [setIsFaceScanComplete, setFaceMatchData]
@@ -209,7 +209,7 @@ const AssentifyProvider = () => {
   });
 
   useEffect(() => {
-    const emitter = new NativeEventEmitter(AssentifySdk);
+    const emitter = new NativeEventEmitter(NativeAssentifySdk);
     const subs = emitter.addListener('AppResult', (AppResult) => {
       if (AppResult?.assentifySdkInitStart) {
         bottomSheetModalRef.current?.present();

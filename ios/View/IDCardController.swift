@@ -8,15 +8,15 @@ class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControll
 {
     private var isDone:Bool = false;
     private var assentifySdk:AssentifySdk?;
-    private var baseAssentifySdk:BaseAssentifySdk?;
+    private var nativeAssentifySdk:NativeAssentifySdk?;
     private var dataFrontModel: IDExtractedModel? = nil;
     private var _kycDocumentDetails:[KycDocumentDetails];
     private var start:Bool = false;
     var infoLabel : UILabel?;
 
-    init(assentifySdk: AssentifySdk,kycDocumentDetails:[KycDocumentDetails],baseAssentifySdk:BaseAssentifySdk) {
+    init(assentifySdk: AssentifySdk,kycDocumentDetails:[KycDocumentDetails],nativeAssentifySdk:NativeAssentifySdk) {
         self.assentifySdk = assentifySdk
-        self.baseAssentifySdk = baseAssentifySdk
+        self.nativeAssentifySdk = nativeAssentifySdk
         self._kycDocumentDetails = kycDocumentDetails
         super.init(nibName: nil, bundle: nil)
     }
@@ -134,7 +134,7 @@ class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControll
                             if let base64String = self.imageToBase64(from:imageUrl  ) {
                                 if let currentViewController = UIViewController.currentViewController {
                                     let viewController = FaceMAtchController(assentifySdk: self.assentifySdk!,
-                                                                             baseAssentifySdk: self.baseAssentifySdk,
+                                                                             nativeAssentifySdk: self.nativeAssentifySdk,
                                                                              secondImage:base64String, delegate: self)
                                     viewController.modalPresentationStyle = .fullScreen
                                     currentViewController.present(viewController, animated: true, completion: nil)
@@ -161,7 +161,7 @@ class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControll
                         if let base64String = self.imageToBase64(from:imageUrl  ) {
                             if let currentViewController = UIViewController.currentViewController {
                                 let viewController = FaceMAtchController(assentifySdk: self.assentifySdk!,
-                                                                         baseAssentifySdk: self.baseAssentifySdk,
+                                                                         nativeAssentifySdk: self.nativeAssentifySdk,
                                                                          secondImage:base64String, delegate: self)
                                 viewController.modalPresentationStyle = .fullScreen
                                 currentViewController.present(viewController, animated: true, completion: nil)
@@ -249,7 +249,7 @@ class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControll
                 "brightness": brightness
             ]
             let result: [String: Any] =  ["IdDataModel": eventResultMap]
-            self.baseAssentifySdk?.sendEvent(withName: "onEnvironmentalConditionsChange", body: result)
+            self.nativeAssentifySdk?.sendEvent(withName: "onEnvironmentalConditionsChange", body: result)
         }
 
     }
@@ -262,7 +262,7 @@ class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControll
         print("IdDataModel")
         print(iDModelToJsonString(dataModel:dataModel))
         DispatchQueue.main.async {
-            self.baseAssentifySdk?.sendEvent(withName: eventName, body: eventResultMap)
+            self.nativeAssentifySdk?.sendEvent(withName: eventName, body: eventResultMap)
         }
 
     }
@@ -273,7 +273,7 @@ class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControll
             eventResultMap =   ["IdDataModel": dataModel?.response as Any]
         }
         DispatchQueue.main.async {
-            self.baseAssentifySdk?.sendEvent(withName: eventName, body: eventResultMap)
+            self.nativeAssentifySdk?.sendEvent(withName: eventName, body: eventResultMap)
         }
 
     }

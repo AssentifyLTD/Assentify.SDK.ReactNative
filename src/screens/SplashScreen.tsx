@@ -9,7 +9,7 @@ import useGlobalStore from '../useGlobalStore';
 import { COLORS } from '../themes';
 import NavigationService from '../helpers/NavigationService';
 
-const { AssentifySdk } = NativeModules;
+const { NativeAssentifySdk } = NativeModules;
 
 const SplashScreen = () => {
   const { setPreferredCountry, setSupportedCountries } = useGlobalStore();
@@ -33,7 +33,7 @@ const SplashScreen = () => {
   );
 
   useEffect(() => {
-    const emitter = new NativeEventEmitter(AssentifySdk);
+    const emitter = new NativeEventEmitter(NativeAssentifySdk);
     const subs = emitter.addListener('AppResult', (AppResult) => {
       if (AppResult?.assentifySdkInitSuccess) {
         if (AppResult?.AssentifySdkHasTemplates) {
