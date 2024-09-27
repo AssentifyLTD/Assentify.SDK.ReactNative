@@ -1,80 +1,81 @@
-# assentify-sdk
+# react-native-assentify-sdk
 
 React Native module that allows you to use the native Assentify SDK
 
 ## Installation
 
 ```sh
-npm install @me/assentify-sdk
+npm install react-native-assentify-sdk
 ```
 
 ```sh
-yarn add @me/assentify-sdk
+yarn add react-native-assentify-sdk
 ```
 
 ## Usage
 
 ```js
-  import { Assentify } from '@me/assentify-sdk';
-  import { View, NativeModules } from 'react-native';
+import { Assentify } from 'react-native-assentify-sdk';
+import { View, NativeModules } from 'react-native';
 
-  const { AssentifySdk } = NativeModules;
+const { AssentifySdk } = NativeModules;
 
-  const apiKey = 'YOUR_API_KEY';
-  const tenantIdentifier = 'YOUR_TENANT_IDENTIFIER';
-  const instanceHash = 'YOUR_INTERACTION';
+const apiKey = 'YOUR_API_KEY';
+const tenantIdentifier = 'YOUR_TENANT_IDENTIFIER';
+const instanceHash = 'YOUR_INTERACTION';
 
-  React.useEffect(() => {
-    const listener = new NativeEventEmitter(AssentifySdk);
+React.useEffect(() => {
+  const listener = new NativeEventEmitter(AssentifySdk);
 
-    listener.addListener('EventResult', (EventResult) => {
-      console.log('EventResult: ', EventResult);
-    });
+  listener.addListener('EventResult', (EventResult) => {
+    console.log('EventResult: ', EventResult);
+  });
 
-    listener.addListener('EventError', (EventError) =>
-      console.log('EventError: ', EventError)
-    );
+  listener.addListener('EventError', (EventError) =>
+    console.log('EventError: ', EventError)
+  );
 
-    return ()=> {
-      listener.removeAllListeners('EventResult');
-      listener.removeAllListeners('EventError');
-    }
-  }, []);
-
-  // ... Press to start verification proces
-  const onStartVerification = () => {
-    Assentify.initialize(apiKey, tenantIdentifier, instanceHash);
+  return () => {
+    listener.removeAllListeners('EventResult');
+    listener.removeAllListeners('EventError');
   };
+}, []);
 
+// ... Press to start verification proces
+const onStartVerification = () => {
+  Assentify.initialize(apiKey, tenantIdentifier, instanceHash);
+};
 
-  export default function App() {
-    return (
-      <View>
-        // Provider must be added
-        <AssentifyProvider />
-      </View>
-    );
-  }
+export default function App() {
+  return (
+    <View>
+      // Provider must be added
+      <AssentifyProvider />
+    </View>
+  );
+}
 ```
 
 ## Compatibility
-We only ensure compatibility with a minimum React Native version of 0.73.6
 
+We only ensure compatibility with a minimum React Native version of 0.73.6
 
 ## Integration
 
 ### iOS
- --- Documentation Here ---
+
+--- Documentation Here ---
+
 ```
  yarn install
 
  cd ios && NO_FLIPPER=1 USE_FRAMEWORKS=static pod install && cd ..
 
  yarn example ios
- ```
-
+```
 
 ### Android
+
 --- Documentation Here ---
 
 ```
@@ -83,7 +84,8 @@ yarn install
 yarn example android
 ```
 
-__Permissions__
+**Permissions**
+
 ```xml
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.CAMERA" />
@@ -96,8 +98,8 @@ __Permissions__
   <uses-feature android:name="android.hardware.camera.autofocus" />
 ```
 
+**AndroidManifest** Open your AndroidManifest.xml file and add the following activity.
 
-__AndroidManifest__ Open your AndroidManifest.xml file and add the following activity.
 ```xml
 <application>
       <activity android:name="com.assentifysdk.SplashScreen"/>
@@ -118,16 +120,15 @@ __AndroidManifest__ Open your AndroidManifest.xml file and add the following act
 </application>
 ```
 
-
 ## Contributing
 
 See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
 
 ## License
 
-Copyright (c) 2024  SAL
+Copyright (c) 2024 SAL
 
-Proprietary and confidential.  This project is confidential and only available to authorized individuals with the permission of the copyright holders.
+Proprietary and confidential. This project is confidential and only available to authorized individuals with the permission of the copyright holders.
 
 ---
 

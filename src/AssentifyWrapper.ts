@@ -2,7 +2,7 @@ import { NativeModules, Platform, Alert, Linking } from 'react-native';
 import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 const LINKING_ERROR =
-  `The package 'react-native-assentify-sdk' doesn't seem to be linked. Make sure: \n\n` +
+  `The package 'react-native-react-native-assentify-sdk' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';

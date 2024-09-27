@@ -2388,9 +2388,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@me/assentify-sdk@workspace:.":
+"react-native-assentify-sdk@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@me/assentify-sdk@workspace:."
+  resolution: "react-native-assentify-sdk@workspace:."
   dependencies:
     "@commitlint/cli": ^19.5.0
     "@commitlint/config-conventional": ^19.5.0
@@ -3962,9 +3962,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"assentify-sdk-example@workspace:example":
+"react-native-assentify-sdk-example@workspace:example":
   version: 0.0.0-use.local
-  resolution: "assentify-sdk-example@workspace:example"
+  resolution: "react-native-assentify-sdk-example@workspace:example"
   dependencies:
     "@babel/core": ^7.20.0
     "@babel/preset-env": ^7.20.0

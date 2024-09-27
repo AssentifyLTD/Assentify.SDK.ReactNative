@@ -1,8 +1,7 @@
 import { View, StyleSheet, Button, DeviceEventEmitter } from 'react-native';
 import React, { useEffect } from 'react';
 
-import { Assentify } from '@me/assentify-sdk';
-
+import { Assentify } from 'react-native-assentify-sdk';
 
 const API_KEY =
   'QwWzzKOYLkDzCLJ9lENlgvRQ1kmkKDv76KbJ9sPfr9Joxwj2DUuzC7htaZP89RqzgB9i9lHc4IpYOA7g';
@@ -12,11 +11,7 @@ const instanceHash =
 
 const Home = () => {
   const onStartVerification = () => {
-    Assentify.initialize(
-      API_KEY,
-      tenantIdentifier,
-      instanceHash,
-    );
+    Assentify.initialize(API_KEY, tenantIdentifier, instanceHash);
   };
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 {
-  "name": "@me/assentify-sdk",
+  "name": "react-native-assentify-sdk",
   "version": "0.0.16",
   "description": "React Native module that allows you to use the native Assentify SDK",
   "main": "lib/commonjs/index",
@@ -26,7 +26,7 @@
     "!**/.*"
   ],
   "scripts": {
-    "example": "yarn workspace assentify-sdk-example",
+    "example": "yarn workspace react-native-assentify-sdk-example",
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
@@ -42,14 +42,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "..assentify-sdk.git"
+    "url": "..react-native-assentify-sdk.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "assentify-sdk/issues"
+    "url": "react-native-assentify-sdk/issues"
   },
-  "homepage": "assentify-sdk#readme",
+  "homepage": "react-native-assentify-sdk#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
