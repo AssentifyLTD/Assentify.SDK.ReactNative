@@ -8,7 +8,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEm
 
 abstract class AssentifySdkBaseModule(context: ReactApplicationContext) : ReactContextBaseJavaModule(context) {
   companion object {
-    const val NAME = "AssentifySdk"
+    const val NAME = "NativeAssentifySdk"
     private const val ERROR_KEY = "EventError"
   }
 
