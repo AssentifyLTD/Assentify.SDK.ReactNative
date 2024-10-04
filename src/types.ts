@@ -312,6 +312,7 @@ export type IdentificationDocumentCapture = {
 
 export type PassportExtractedModel = {
   outputProperties?: Record<string, any> | null;
+  transformedProperties?: Record<string, any> | null;
   extractedData?: Record<string, any> | null;
   imageUrl?: string | null;
   faces?: Faces[] | null;
@@ -320,8 +321,10 @@ export type PassportExtractedModel = {
 
 export type OtherExtractedModel = {
   outputProperties?: Record<string, any> | null;
+  transformedProperties?: Record<string, any> | null;
   extractedData?: Record<string, any> | null;
   additionalDetails?: Record<string, any> | null;
+  transformedDetails?: Record<string, any> | null;
   imageUrl?: string | null;
   faces?: Faces[] | null;
   identificationDocumentCapture?: IdentificationDocumentCapture | null;
@@ -329,6 +332,7 @@ export type OtherExtractedModel = {
 
 export type IDExtractedModel = {
   outputProperties?: Record<string, any> | null;
+  transformedProperties?: Record<string, any> | null;
   extractedData?: Record<string, any> | null;
   imageUrl?: string;
   faces?: Faces[] | null;

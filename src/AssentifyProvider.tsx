@@ -143,14 +143,12 @@ const AssentifyProvider = () => {
 
   const onFaceScanComplete = useCallback(
     (data: FaceExtractedModel) => {
-      console.log('onFaceScanComplete: ', data);
       if (data) {
         setIsFaceScanComplete(true);
         setFaceMatchData(data);
-
         const params = {
         };
-        NativeAssentifySdk.submitData(params);
+       NativeAssentifySdk.submitData(params);
       }
     },
     [setIsFaceScanComplete, setFaceMatchData]
@@ -273,7 +271,6 @@ const AssentifyProvider = () => {
         onFaceScanComplete(response);
       } else if (result?.IdDataModel) {
         const response = JsonParserIdCard(result?.IdDataModel);
-        console.log('onCompleteCallback: ', response);
         onIDScanComplete(response);
       } else if (result?.OtherDataModel) {
         const response = JsonParserOtherID(result?.OtherDataModel);

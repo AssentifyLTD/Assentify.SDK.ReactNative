@@ -1,3 +1,4 @@
+import com.assentify.sdk.RemoteClient.Models.DocumentTokensModel
 
 class StepsName{
   companion object {

@@ -34,7 +34,9 @@ const AssentifyWrapper = {
     ENV_PREDICTION_LOW_PERCENTAGE?: number,
     ENV_PREDICTION_HIGH_PERCENTAGE?: number,
     ENV_CustomColor?: string,
-    ENV_HoldHandColor?: string
+    ENV_HoldHandColor?: string,
+    enableDetect?: boolean,
+    enableGuide?: boolean
   ) {
     request(
       Platform.select({
@@ -59,8 +61,10 @@ const AssentifyWrapper = {
             ENV_BRIGHTNESS_LOW_THRESHOLD ?? 0.0,
             ENV_PREDICTION_LOW_PERCENTAGE ?? 50.0,
             ENV_PREDICTION_HIGH_PERCENTAGE ?? 100.0,
-            ENV_CustomColor ?? '#008000',
-            ENV_HoldHandColor ?? '#f5a103'
+            ENV_CustomColor ?? '#ffffff',
+            ENV_HoldHandColor ?? '#f5a103',
+            enableDetect ?? true,
+            enableGuide ?? true,
           );
         } else if (result === RESULTS.UNAVAILABLE) {
           Alert.alert(

@@ -13,6 +13,7 @@ import { DOC_TYPE } from '../helpers/constants';
 import { NativeModules } from 'react-native';
 import useGlobalStore from '../useGlobalStore';
 import NavigationService from '../helpers/NavigationService';
+import { Language } from '../helpers/constants';
 
 const { NativeAssentifySdk } = NativeModules;
 
@@ -23,11 +24,11 @@ const HowToCapture: React.FC<Props> = () => {
 
   const onStart = () => {
     if (docType === DOC_TYPE.PASSPORT) {
-      NativeAssentifySdk.startScanPassport();
+       NativeAssentifySdk.startScanPassport(Language.English,true);
     } else if (docType === DOC_TYPE.CIVIL_ID) {
-      NativeAssentifySdk.startScanIDPage(JSON.stringify(kycDocumentDetails));
+      NativeAssentifySdk.startScanIDPage(JSON.stringify(kycDocumentDetails),Language.Arabic,true,true);
     } else if (docType === DOC_TYPE.OTHER) {
-      NativeAssentifySdk.startScanOtherIDPage();
+      NativeAssentifySdk.startScanOtherIDPage(Language.English,true);
     }
     // navigation.navigate(PAGES.SCANNER);
     // navigation.navigate(PAGES.SCAN_FAILED);

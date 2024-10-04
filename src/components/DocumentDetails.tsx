@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import React from 'react';
 import { COLORS } from '../themes';
 import { pixelSizeHorizontal, pixelSizeVertical } from '../themes/styling';
@@ -13,21 +13,15 @@ const DocumentDetails: React.FC<Props> = (props) => {
   const { scannedData } = props;
   const mrzFields = scannedData?.identificationDocumentCapture;
 
-  const mrzField = (field: string) => {
-    return mrzFields?.[field as keyof typeof mrzFields];
-  };
+  if (!mrzFields) {
+    return <Text>No data available</Text>; // Render a message if there is no data
+  }
 
   return (
     <View style={styles.DocumentDetails}>
-      <DetailLabel title="First name" label={mrzField('name')} />
-      <DetailLabel title="Family name" label={mrzField('surname')} />
-      <DetailLabel title="Country" label={mrzField('country')} />
-      <DetailLabel title="Nationality" label={mrzField('nationality')} />
-      <DetailLabel title="Birthdate" label={mrzField('birthDate')} />
-      <DetailLabel title="Expiry date" label={mrzField('expiryDate')} />
-      <DetailLabel title="Sex" label={mrzField('sex')} />
-      <DetailLabel title="Document type" label={mrzField('documentType')} />
-      <DetailLabel title="Document number" label={mrzField('documentNumber')} />
+      {Object.entries(mrzFields).map(([key, value]) => (
+        <DetailLabel key={key} title={key} label={String(value)} />
+      ))}
     </View>
   );
 };

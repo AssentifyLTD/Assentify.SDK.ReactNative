@@ -1,82 +1,215 @@
 package com.assentifysdk
 
-import AssentifySdk
-import SubmitRequestModel
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
+
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
+import android.view.View
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
-import com.facebook.react.bridge.Arguments
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.modules.core.DeviceEventManagerModule
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import androidx.appcompat.app.AppCompatActivity
+import com.assentify.sdk.AssentifySdk
+import com.assentify.sdk.AssentifySdkObject
 import com.assentify.sdk.Core.Constants.MotionType
+import com.assentify.sdk.Core.Constants.ZoomType
+import com.assentify.sdk.Models.BaseResponseDataModel
+import com.assentify.sdk.Models.encodeBaseResponseDataModelToJson
+import com.assentify.sdk.RemoteClient.Models.KycDocumentDetails
 import com.assentify.sdk.FaceMatch.FaceMatchCallback
 import com.assentify.sdk.RemoteClient.Models.StepDefinitions
-import com.assentify.sdk.AssentifySdkObject
 import com.assentify.sdk.FaceMatch.FaceResponseModel
-import com.assentify.sdk.Models.BaseResponseDataModel
-
+import com.assentify.sdk.FaceMatch.FaceMatch
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import pl.droidsonroids.gif.GifImageView
+import com.assentify.sdk.RemoteClient.Models.SubmitRequestModel
+import android.content.Context
+import android.content.Intent
+import com.facebook.react.modules.core.DeviceEventManagerModule
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.ReactApplicationContext
+import android.util.Log
 
 class FaceMatchActivity: AppCompatActivity(),
   FaceMatchCallback {
+
 private lateinit var assentifySdk: AssentifySdk
   private lateinit var reactApplicationContext: ReactApplicationContext
-  private var base64SecondImage: String? = ""
+  private lateinit var faceMatch: FaceMatch
   private lateinit var infoText: TextView
+  private lateinit var infoIcon: ImageView
+  private lateinit var infoLayout: LinearLayout
+  private lateinit var popUpContainer: LinearLayout
+  private lateinit var popUpIcon: ImageView
+  private lateinit var popUpText: TextView
+  private lateinit var popUpSubText: TextView
+  private lateinit var popUpButton: Button
+
+  private lateinit var holdHandColor: String;
+  private lateinit var processingColor: String;
+  private  var showCountDown: Boolean = true;
   private var start: Boolean = false;
+
+
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_scan)
+    setContentView(R.layout.activity_face_scan)
+
       reactApplicationContext =  ReactApplicationContextObject.getReactApplicationContextObject()
-     infoText = findViewById(R.id.infoText)
-    infoText.setText("Position your face within\n\t\t\tthe center of screen")
-     startAssentifySdk()
-    val toolbar: Toolbar = findViewById(R.id.toolbar)
-    setSupportActionBar(toolbar)
-    supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    supportActionBar?.setDisplayShowTitleEnabled(false)
-    val colorStateList = resources.getColorStateList(R.color.white)
-    toolbar.navigationIcon?.setTintList(colorStateList)
-    toolbar.setNavigationOnClickListener {  runOnUiThread{
-      finish()
-    } }
+    showCountDown = intent.getBooleanExtra("showCountDown",true)
+    holdHandColor = intent.getStringExtra("holdHandColor")!!
+    processingColor = intent.getStringExtra("processingColor")!!
+
+    startAssentifySdk()
+
+    val backButton = findViewById<RelativeLayout>(R.id.backButton)
+    val drawable = getResources().getDrawable(R.drawable.rounded_background)
+    drawable?.setColorFilter(Color.parseColor(holdHandColor), PorterDuff.Mode.SRC_ATOP)
+    backButton.setBackground(drawable)
+
+    backButton.setOnClickListener {
+      runOnUiThread {
+        triggerEvent("onBackClick", null)
+        faceMatch.stopScanning();
+        finish()
+      }
+    }
+
+
+    infoLayout = findViewById<LinearLayout>(R.id.infoLayout)
+    val drawableInfo = getResources().getDrawable(R.drawable.info_rounded_background)
+    drawableInfo?.setColorFilter(Color.parseColor(holdHandColor), PorterDuff.Mode.SRC_ATOP)
+    infoLayout.setBackground(drawableInfo)
+
+
+    val toolbarTitle = findViewById<TextView>(R.id.toolbar_title)
+    toolbarTitle.setText("Face Capture")
+    toolbarTitle.setTextColor(Color.parseColor(processingColor))
+
+
+    infoText = findViewById(R.id.infoText)
+    infoText.setText("Please face within circle")
+    infoText.setTextColor(Color.parseColor(processingColor))
+
+    infoIcon = findViewById<ImageView>(R.id.info_icon)
+    infoIcon.setImageDrawable(getResources().getDrawable(R.drawable.info_icon))
+
+
+
+    popUpContainer = findViewById<LinearLayout>(R.id.popUpContainer)
+    val drawablePopUpContainer = getResources().getDrawable(R.drawable.info_rounded_background)
+    drawablePopUpContainer?.setColorFilter(
+      Color.parseColor(holdHandColor),
+      PorterDuff.Mode.SRC_ATOP
+    )
+    popUpContainer.setBackground(drawablePopUpContainer)
+    popUpContainer.visibility = View.GONE
+    popUpContainer.setOnClickListener {
+      if (!start) {
+        popUpContainer.visibility = View.GONE
+      }
+    }
+
   }
 
 
+  fun showPopUpMessage(icon: Int, title: String, subTitle: String, isSending: Boolean) {
+    popUpContainer.visibility = View.VISIBLE
+
+    popUpIcon = findViewById<ImageView>(R.id.popUpIcon)
+    popUpIcon.setImageDrawable(getResources().getDrawable(icon))
+    popUpIcon.visibility = View.VISIBLE
+
+    popUpText = findViewById(R.id.popUpText)
+    popUpText.setText(title)
+    popUpText.setTextColor(Color.parseColor(processingColor))
+
+    popUpSubText = findViewById(R.id.popUpSubText)
+    popUpSubText.visibility = View.GONE
+
+    val drawablePopUpButton = getResources().getDrawable(R.drawable.button_rounded_background)
+    drawablePopUpButton?.setColorFilter(Color.parseColor(processingColor), PorterDuff.Mode.SRC_ATOP)
+    popUpButton= findViewById(R.id.popUpButton)
+    popUpButton.setBackground(drawablePopUpButton)
+    popUpButton.setTextColor(Color.parseColor(holdHandColor))
+
+    popUpButton.setOnClickListener {
+      if(!start){
+        popUpContainer.visibility  = View.GONE
+      }
+    }
+
+    if(isSending){
+      popUpButton.visibility = View.GONE
+    }else{
+      popUpButton.visibility = View.VISIBLE
+    }
+    if (subTitle.isNotEmpty()) {
+      popUpSubText.setText(subTitle)
+      popUpSubText.setTextColor(Color.parseColor(processingColor))
+      popUpSubText.visibility = View.VISIBLE
+    }
+
+
+  }
+
+  fun hidePopUpMessage() {
+    popUpContainer.visibility = View.GONE
+  }
+
   fun startAssentifySdk() {
-    assentifySdk = AssentifySdkObject.getAssentifySdkObject();
     val sharedPreferences = reactApplicationContext.getSharedPreferences("FaceMatch", Context.MODE_PRIVATE)
-    base64SecondImage = sharedPreferences.getString("Base64SecondImage", "")
-    var scanFace = assentifySdk!!.startFaceMatch(
+    val base64SecondImage = sharedPreferences.getString("Base64SecondImage", "")
+    assentifySdk = AssentifySdkObject.getAssentifySdkObject();
+    faceMatch = assentifySdk!!.startFaceMatch(
       this@FaceMatchActivity,
-      base64SecondImage!!
+      base64SecondImage!!,
+      showCountDown
     );
+    Thread.sleep(500);
     var fragmentManager = supportFragmentManager
     var transaction = fragmentManager.beginTransaction()
-    transaction.replace(R.id.fragmentContainer, scanFace)
+    transaction.replace(R.id.fragmentContainer, faceMatch)
     transaction.commit()
-
+    faceMatch.startScanning()
   }
 
   override fun onError(dataModel: BaseResponseDataModel) {
     triggerEvent("onError", dataModel)
+    runOnUiThread {
       start = false;
-
+      showPopUpMessage(R.drawable.warning, "Unable to Match", "Let's try again", false)
+    }
   }
 
   override fun onSend() {
     triggerEvent("onSend", null)
+    runOnUiThread {
       start = true;
-
+      runOnUiThread {
+        showPopUpMessage(R.drawable.sending, "Transmitting", "", true)
+      }
+    }
   }
 
   override fun onRetry(dataModel: BaseResponseDataModel) {
-    triggerEvent("onRetry",dataModel)
+    triggerEvent("onRetry", dataModel)
+    runOnUiThread {
       start = false;
+      showPopUpMessage(R.drawable.warning, "Unable to Match", "Let's try again", false)
+    }
+  }
 
+  override fun onLivenessUpdate(dataModel: BaseResponseDataModel) {
+    triggerEvent("onLivenessUpdate", dataModel)
+    runOnUiThread {
+      start = false;
+      showPopUpMessage(R.drawable.warning, "Liveness Failed", "", false)
+    }
   }
 
   override fun onComplete(dataModel: FaceResponseModel) {
@@ -107,7 +240,9 @@ private lateinit var assentifySdk: AssentifySdk
     }
 
     runOnUiThread{
-      finish()
+      start = false
+      faceMatch.stopScanning();
+       finish()
     }
   }
 
@@ -115,36 +250,29 @@ private lateinit var assentifySdk: AssentifySdk
     brightness: Double,
     motion: MotionType,
   ) {
-      val eventResultMap = Arguments.createMap()
-
-      if(start){
-        infoText.setText("Processing...")
-        infoText.setTextColor(getResources().getColor(R.color.Green))
-      }else{
-        infoText.setTextColor(getResources().getColor(R.color.yellow))
-        if ( motion == MotionType.NO_DETECT ) {
-          infoText.setText("Position your face within\n\t\t\tthe center of screen")
-        }
-        else if (motion == MotionType.HOLD_YOUR_HAND) {
-          start = false;
+    runOnUiThread {
+      if (start == false) {
+        infoLayout.visibility = View.VISIBLE
+        if (motion == MotionType.HOLD_YOUR_HAND) {
           infoText.setText("Please Hold Your Hand")
+          infoIcon.setImageDrawable(getResources().getDrawable(R.drawable.info_icon))
         } else {
-            infoText.setText("Position your face within\n\t\t\tthe center of screen")
+          if (motion == MotionType.SENDING) {
+            infoText.setText("Hold Steady")
+            infoIcon.setImageDrawable(getResources().getDrawable(R.drawable.info_icon))
+          }
+          if (motion == MotionType.NO_DETECT) {
+            infoText.setText("Please face within circle")
+            infoIcon.setImageDrawable(getResources().getDrawable(R.drawable.info_icon))
+          }
+
         }
+      } else {
+        infoLayout.visibility = View.GONE;
       }
-
-      eventResultMap.putBoolean("start", start)
-      eventResultMap.putString("motion", motion.toString())
-      eventResultMap.putDouble("brightness", brightness)
-
-      val result = Arguments.createMap().apply {
-        putMap("FaceMatchDataModel", eventResultMap)
-      }
-
-      reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-        .emit("onEnvironmentalConditionsChange", result)
-
+    }
   }
+
 
   private fun triggerCompleteEvent(eventName:String, dataModel: FaceResponseModel?){
       val eventResultMap = Arguments.createMap().apply {

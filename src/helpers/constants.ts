@@ -12,3 +12,33 @@ export const PAGES = {
   SCAN_RESULT: 'Assentify_ScanResult',
   SCAN_FAILED: 'Assentify_ScanFailed',
 };
+
+
+export const Language = {
+  English: "en",
+  Arabic: "ar",
+  Azerbaijani: "az",
+  Belarusian: "be",
+  Georgian: "ka",
+  Korean: "ko",
+  Latvian: "lv",
+  Lithuanian: "lt",
+  Punjabi: "pa",
+  Russian: "ru",
+  Sanskrit: "sa",
+  Sindhi: "sd",
+  Thai: "th",
+  Turkish: "tr",
+  Ukrainian: "uk",
+  Urdu: "ur",
+  Uyghur: "ug",
+  NON: "NON",
+};
+
+
+
+export const LanguageTransformationEnum = {
+  Transliteration: 1,
+  Translation: 2,
+};
+
