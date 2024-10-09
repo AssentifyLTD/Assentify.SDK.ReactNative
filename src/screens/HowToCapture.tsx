@@ -24,9 +24,9 @@ const HowToCapture: React.FC<Props> = () => {
 
   const onStart = () => {
     if (docType === DOC_TYPE.PASSPORT) {
-       NativeAssentifySdk.startScanPassport(Language.English,true);
+       NativeAssentifySdk.startScanPassport(Language.Arabic,false);
     } else if (docType === DOC_TYPE.CIVIL_ID) {
-      NativeAssentifySdk.startScanIDPage(JSON.stringify(kycDocumentDetails),Language.Arabic,true,true);
+      NativeAssentifySdk.startScanIDPage(JSON.stringify(kycDocumentDetails),Language.English, true, true);
     } else if (docType === DOC_TYPE.OTHER) {
       NativeAssentifySdk.startScanOtherIDPage(Language.English,true);
     }

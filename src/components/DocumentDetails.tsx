@@ -11,16 +11,16 @@ type Props = {
 
 const DocumentDetails: React.FC<Props> = (props) => {
   const { scannedData } = props;
-  const mrzFields = scannedData?.identificationDocumentCapture;
+  const extractedFields = scannedData?.extractedData;
 
-  if (!mrzFields) {
-    return <Text>No data available</Text>; // Render a message if there is no data
+  if (!extractedFields) {
+    return <Text>No data available</Text>;
   }
 
   return (
     <View style={styles.DocumentDetails}>
-      {Object.entries(mrzFields).map(([key, value]) => (
-        <DetailLabel key={key} title={key} label={String(value)} />
+      {Object.entries(extractedFields).map(([key, value]) => (
+        <DetailLabel key={key} title={key} label={value} />
       ))}
     </View>
   );

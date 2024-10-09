@@ -265,6 +265,7 @@ const AssentifyProvider = () => {
       onCompleteCallback(result);
       if (result?.PassportDataModel) {
         const response = JsonParserPassport(result?.PassportDataModel);
+        console.log(response)
         onPassportScanComplete(response);
       } else if (result?.FaceMatchDataModel) {
         const response = JsonParserFaceMatch(result?.FaceMatchDataModel);
