@@ -223,7 +223,7 @@ class ScanOtherActivity: AppCompatActivity(),
         if (item.stepDefinition == StepsName.DocumentCapture) {
           val documentCaptureModel = SubmitRequestModel(
             item.stepId, StepsName.DocumentCapture,
-            convertMap(dataModel.otherExtractedModel!!.outputProperties)
+            convertMap(dataModel.otherExtractedModel!!.transformedProperties)
           );
           val documentCaptureSharedPreferences = reactApplicationContext.getSharedPreferences("DocumentCaptureStepModel", Context.MODE_PRIVATE)
           val documentCaptureSharedPreferencesEditor = documentCaptureSharedPreferences.edit()

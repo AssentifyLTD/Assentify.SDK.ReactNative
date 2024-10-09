@@ -239,26 +239,12 @@ class ScanIDActivity: AppCompatActivity(),
     }
   }
 
-  private var resultModel: IDExtractedModel? = null
 
   override fun onComplete(dataModel: IDResponseModel, order: Int) {
 
-    val newModel = dataModel.iDExtractedModel
+    triggerCompleteEvent("onComplete",dataModel.iDExtractedModel!!)
 
-    resultModel = if (resultModel != null && newModel != null) {
-      IDExtractedModel(
-        outputProperties = resultModel?.outputProperties.orEmpty() + newModel.outputProperties.orEmpty(),
-        transformedProperties = resultModel?.transformedProperties.orEmpty() + newModel.transformedProperties.orEmpty(),
-        extractedData = resultModel?.extractedData.orEmpty() + newModel.extractedData.orEmpty(),
-        imageUrl = newModel.imageUrl ?: resultModel?.imageUrl,
-        faces = (resultModel?.faces.orEmpty() + newModel.faces.orEmpty()).distinct(),
-        identificationDocumentCapture = newModel.identificationDocumentCapture ?: resultModel?.identificationDocumentCapture
-      )
-    } else {
-      newModel
-    }
-
-      values.putAll(convertMap(dataModel.iDExtractedModel!!.outputProperties))
+      values.putAll(convertMap(dataModel.iDExtractedModel!!.transformedProperties))
 
 
       if(kycDocumentDetails.size > 1){
@@ -294,7 +280,6 @@ class ScanIDActivity: AppCompatActivity(),
               documentCaptureSharedPreferencesEditor.apply()
             }
           }
-          triggerCompleteEvent("onComplete",resultModel!!)
           /** **/
           var base64Image = ImageToBase64Converter().execute(frontModel!!.iDExtractedModel!!.imageUrl).get()
           val sharedPreferences = reactApplicationContext.getSharedPreferences("FaceMatch", Context.MODE_PRIVATE)
@@ -360,7 +345,6 @@ class ScanIDActivity: AppCompatActivity(),
             documentCaptureSharedPreferencesEditor.apply()
           }
         }
-        triggerCompleteEvent("onComplete",resultModel!!)
         /** **/
         var base64Image = ImageToBase64Converter().execute(dataModel.iDExtractedModel!!.imageUrl).get()
         val sharedPreferences = reactApplicationContext.getSharedPreferences("FaceMatch", Context.MODE_PRIVATE)

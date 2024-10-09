@@ -235,7 +235,7 @@ class ScanPassportActivity : AppCompatActivity(),
         if (item.stepDefinition == StepsName.DocumentCapture) {
           val documentCaptureModel = SubmitRequestModel(
             item.stepId, StepsName.DocumentCapture,
-            convertMap(dataModel.passportExtractedModel!!.outputProperties)
+            convertMap(dataModel.passportExtractedModel!!.transformedProperties)
           );
           val documentCaptureSharedPreferences = reactApplicationContext.getSharedPreferences(
             "DocumentCaptureStepModel",
