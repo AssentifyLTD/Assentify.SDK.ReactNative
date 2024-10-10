@@ -11,6 +11,7 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
+import { merge } from 'lodash';
 import {
   type PassportExtractedModel,
   type FaceExtractedModel,
@@ -84,6 +85,18 @@ const AssentifyProvider = () => {
   } = useGlobalStore();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
+  // Ref to store whether it's the first (front) or second (back) scan
+  const scanCountRef = useRef<number>(0);
+
+  // Ref to store front and back scanned data
+  const idScanDataRef = useRef<{
+    front: IDExtractedModel | null;
+    back: IDExtractedModel | null;
+  }>({
+    front: null,
+    back: null,
+  });
+
   const onNavigateFailed = (reason: number) => {
     setTimeout(() => {
       NavigationService.navigate(PAGES.SCAN_FAILED, {
@@ -144,11 +157,11 @@ const AssentifyProvider = () => {
   const onFaceScanComplete = useCallback(
     (data: FaceExtractedModel) => {
       if (data) {
+        setIsIDScanComplete(true);
         setIsFaceScanComplete(true);
         setFaceMatchData(data);
-        const params = {
-        };
-       NativeAssentifySdk.submitData(params);
+        const params = {};
+        NativeAssentifySdk.submitData(params);
       }
     },
     [setIsFaceScanComplete, setFaceMatchData]
@@ -156,18 +169,37 @@ const AssentifyProvider = () => {
 
   const onIDScanComplete = useCallback(
     (data: IDExtractedModel) => {
-      console.log('onIDScanComplete: ', data);
-      if (data) {
-        const identity = data?.identificationDocumentCapture;
-        const willProceed = identificationChecking(identity!);
-        console.log('onIDScanComplete willProceed: ', willProceed);
-        if (!willProceed) {
-          setIsIDScanComplete(false);
-          return;
-        }
+      const identity = data?.identificationDocumentCapture;
+      const willProceed = identificationChecking(identity!);
 
-        setIsIDScanComplete(true);
+      if (!willProceed) {
+        setIsIDScanComplete(false);
+        return;
+      }
+
+      // Determine if it's the first or second scan
+      if (scanCountRef.current === 0) {
+        // First scan: Store the front data
+        idScanDataRef.current.front = data;
+        scanCountRef.current += 1;
         setIDScannedData(data);
+      } else if (scanCountRef.current === 1) {
+        // Second scan: Store the back data
+        idScanDataRef.current.back = data;
+
+        // Now both front and back data are available, so merge them
+        const mergedData = merge(
+          {},
+          idScanDataRef.current.front,
+          idScanDataRef.current.back
+        );
+
+        setIDScannedData(mergedData);
+
+        // Reset the counter and refs for future scans
+        scanCountRef.current = 0;
+        idScanDataRef.current.front = null;
+        idScanDataRef.current.back = null;
       }
     },
     [identificationChecking, setIDScannedData, setIsIDScanComplete]
@@ -265,7 +297,7 @@ const AssentifyProvider = () => {
       onCompleteCallback(result);
       if (result?.PassportDataModel) {
         const response = JsonParserPassport(result?.PassportDataModel);
-        console.log(response)
+        console.log(response);
         onPassportScanComplete(response);
       } else if (result?.FaceMatchDataModel) {
         const response = JsonParserFaceMatch(result?.FaceMatchDataModel);
@@ -434,3 +466,4 @@ const AssentifyProvider = () => {
 };
 
 export { AssentifyProvider };
+
