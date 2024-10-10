@@ -1,17 +1,17 @@
 package com.assentifysdk
 
-import AssentifySdk
-import AssentifySdkCallback
+import com.assentify.sdk.AssentifySdk
+import com.assentify.sdk.AssentifySdkCallback
+import com.assentify.sdk.AssentifySdkObject
 import BlockLoaderKeys
 import StepsName
-import SubmitRequestModel
+import com.assentify.sdk.RemoteClient.Models.SubmitRequestModel
 import WrapUpKeys
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import com.assentify.sdk.AssentifySdkObject
 import com.assentify.sdk.Core.Constants.EnvironmentalConditions
 import com.assentify.sdk.RemoteClient.Models.ConfigModel
 import com.assentify.sdk.RemoteClient.Models.StepDefinitions
@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import com.assentify.sdk.RemoteClient.Models.KycDocumentDetails
 
 
 class AssentifySdkModule(context: ReactApplicationContext) :
@@ -38,7 +39,8 @@ class AssentifySdkModule(context: ReactApplicationContext) :
   private lateinit var timeStarted: String
   private lateinit var configModel: ConfigModel
   private val mainHandler = Handler(Looper.getMainLooper())
-
+  private lateinit var environmentalConditions: EnvironmentalConditions
+  private lateinit var templatesByCountry: List<TemplatesByCountry>
   @ReactMethod
   fun initialize(
       apiKey: String,
@@ -56,6 +58,8 @@ class AssentifySdkModule(context: ReactApplicationContext) :
       ENV_PREDICTION_HIGH_PERCENTAGE: Float? = null,
       ENV_CustomColor: String? = null,
       ENV_HoldHandColor: String? = null,
+      enableDetect: Boolean = true,
+      enableGuide: Boolean = true,
   ) {
     try {
       if (apiKey.isNullOrBlank() ||
@@ -80,11 +84,13 @@ class AssentifySdkModule(context: ReactApplicationContext) :
       println("ENV_PREDICTION_HIGH_PERCENTAGE: ${ENV_PREDICTION_HIGH_PERCENTAGE.toString()}")
       println("ENV_CustomColor: $ENV_CustomColor")
       println("ENV_HoldHandColor: $ENV_HoldHandColor")
+      println("enableDetect: $enableDetect")
+      println("enableGuide: $enableGuide")
 
-      val environmentalConditions =
+       environmentalConditions =
           EnvironmentalConditions(
-            true,
-            true,
+            enableDetect,
+            enableGuide,
             ENV_BRIGHTNESS_HIGH_THRESHOLD ?: 500.0f,
             ENV_BRIGHTNESS_LOW_THRESHOLD ?: 00.0f,
             ENV_PREDICTION_LOW_PERCENTAGE ?: 50.0f,
@@ -124,33 +130,47 @@ class AssentifySdkModule(context: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun startScanPassport() {
+  fun startScanPassport(language: String,showCountDown:Boolean) {
     timeStarted = getCurrentDateTimeUTC();
     /** Nav To Passport Scan Page */
     val intent = Intent(reactApplicationContext, ScanPassportActivity::class.java)
     if (intent.resolveActivity(reactApplicationContext.packageManager) !== null) {
       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+      intent.putExtra("holdHandColor", environmentalConditions.HoldHandColor)
+      intent.putExtra("processingColor", environmentalConditions.CustomColor)
+      intent.putExtra("language", language)
+      intent.putExtra("showCountDown", showCountDown)
       reactApplicationContext?.startActivity(intent)
     }
   }
 
   @ReactMethod
-  fun startScanOtherIDPage() {
+  fun startScanOtherIDPage(language: String,showCountDown:Boolean) {
     timeStarted = getCurrentDateTimeUTC();
     /** Nav To Other Scan Page */
     val intent = Intent(currentActivity, ScanOtherActivity::class.java)
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    intent.putExtra("holdHandColor", environmentalConditions.HoldHandColor)
+    intent.putExtra("processingColor", environmentalConditions.CustomColor)
+    intent.putExtra("language", language)
+    intent.putExtra("showCountDown", showCountDown)
     currentActivity?.startActivity(intent)
   }
 
   @ReactMethod
-  fun startScanIDPage(jsonStringKycDocumentDetails: String) {
+  fun startScanIDPage(jsonStringKycDocumentDetails: String,language: String,flippingCard:Boolean,showCountDown:Boolean) {
     timeStarted = getCurrentDateTimeUTC();
     try {
       /** Nav To ID Scan Page */
       val intent = Intent(currentActivity, ScanIDActivity::class.java)
       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+      intent.putExtra("holdHandColor", environmentalConditions.HoldHandColor)
+      intent.putExtra("processingColor", environmentalConditions.CustomColor)
       intent.putExtra("kycDocumentDetails", jsonStringKycDocumentDetails)
+      intent.putExtra("language", language)
+      intent.putExtra("flippingCard", flippingCard)
+      intent.putExtra("title", getIdTitle(jsonStringKycDocumentDetails!!))
+      intent.putExtra("showCountDown", showCountDown)
       currentActivity?.startActivity(intent)
     } catch (e: Exception) {
       Log.e(NAME, e.toString())
@@ -205,21 +225,18 @@ class AssentifySdkModule(context: ReactApplicationContext) :
         // }
         // sendEvent("AppResult", eventResultMap)
         this.configModel = configModel;
-        assentifySdk.getTemplates()
-      } catch (e: Exception) {
-        showErrorMessage(e.toString())
-      }
-    }
-  }
-  override fun onHasTemplates(templates: List<TemplatesByCountry>) {
-    mainHandler.post {
-      val eventResultMap =
+        templatesByCountry = assentifySdk.getTemplates();
+
+        val eventResultMap =
           Arguments.createMap().apply {
-            val jsonString = encodeTemplatesByCountryToJson(templates)
+            val jsonString = encodeTemplatesByCountryToJson(templatesByCountry)
             putBoolean("assentifySdkInitSuccess", true)
             putString("AssentifySdkHasTemplates", jsonString)
           }
-      sendEvent("AppResult", eventResultMap)
+        sendEvent("AppResult", eventResultMap)
+      } catch (e: Exception) {
+        showErrorMessage(e.toString())
+      }
     }
   }
 
@@ -400,5 +417,25 @@ class AssentifySdkModule(context: ReactApplicationContext) :
       }
     }
     return resultMap
+  }
+
+  private fun getIdTitle(jsonStringKycDocumentDetails: String): String {
+    var title = "";
+    val gson = Gson()
+    val listType = object : TypeToken<List<KycDocumentDetails>>() {}.type
+    val kycDocumentDetails: List<KycDocumentDetails> =
+      gson.fromJson(jsonStringKycDocumentDetails, listType)
+
+    templatesByCountry.forEach { it ->
+      it.templates.forEach { template ->
+        if (template.kycDocumentDetails.isNotEmpty()) {
+          if (kycDocumentDetails[0].templateProcessingKeyInformation == template.kycDocumentDetails[0].templateProcessingKeyInformation) {
+            title = template.kycDocumentType;
+          }
+        }
+
+      }
+    }
+    return title;
   }
 }

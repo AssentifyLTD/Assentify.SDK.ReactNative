@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import React from 'react';
 import type { IDExtractedModel, OtherExtractedModel } from '../types';
 import { COLORS } from '../themes';
@@ -11,26 +11,17 @@ type Props = {
 
 const IDDocumentDetail: React.FC<Props> = (props) => {
   const { scannedData } = props;
-  const mrzFields = scannedData?.identificationDocumentCapture;
+  const extractedFields = scannedData?.extractedData;
 
-  const mrzField = (field: string) => {
-    return mrzFields?.[field as keyof typeof mrzFields];
-  };
+  if (!extractedFields) {
+    return <Text>No data available</Text>;
+  }
 
   return (
     <View style={styles.DocumentDetails}>
-      <DetailLabel title="First name" label={mrzField('name')} />
-      <DetailLabel title="Family name" label={mrzField('surname')} />
-      <DetailLabel title="Mother's name" label={mrzField('iDMothersName')} />
-      <DetailLabel title="Father's name" label={mrzField('iDFathersName')} />
-      <DetailLabel title="Country" label={mrzField('country')} />
-      <DetailLabel title="Nationality" label={mrzField('nationality')} />
-      <DetailLabel title="Birthdate" label={mrzField('birthDate')} />
-      <DetailLabel title="Place of birth" label={mrzField('iDPlaceOfBirth')} />
-      <DetailLabel title="Expiry date" label={mrzField('expiryDate')} />
-      <DetailLabel title="Sex" label={mrzField('sex')} />
-      <DetailLabel title="ID type" label={mrzField('iDType')} />
-      <DetailLabel title="Document number" label={mrzField('documentNumber')} />
+      {Object.entries(extractedFields).map(([key, value]) => (
+        <DetailLabel key={key} title={key} label={value} />
+      ))}
     </View>
   );
 };

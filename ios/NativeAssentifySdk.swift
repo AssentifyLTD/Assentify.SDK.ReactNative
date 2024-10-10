@@ -11,11 +11,14 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
     private var stepDefinitions :[StepDefinitions]?
     private var configModel :ConfigModel?
     private var timeStarted :String?
-
+    private var holdHandColor: String?;
+    private var processingColor: String?;
+    private var templatesByCountry: [TemplatesByCountry]?;
 
 
     @objc
-    func initialize(_ apiKey: String,
+    func initialize(_
+                          apiKey: String,
                           tenantIdentifier: String,
                           instanceHash: String,
                           processMrz: Bool = true,
@@ -28,8 +31,12 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
                           ENV_BRIGHTNESS_LOW_THRESHOLD: Float = 0.0,
                           ENV_PREDICTION_LOW_PERCENTAGE: Float = 50.0,
                           ENV_PREDICTION_HIGH_PERCENTAGE: Float = 100.0,
-                          ENV_CustomColor: String = "#f5a103",
-                          ENV_HoldHandColor: String = "#f5a103") -> Void {
+                          ENV_CustomColor: String,
+                          ENV_HoldHandColor: String,
+                         enableDetect: Bool = true,
+                         enableGuide: Bool = true
+           
+                 ) -> Void {
 
         if(apiKey.isEmpty || tenantIdentifier.isEmpty || instanceHash.isEmpty ){
             print("apiKey, tenantIdentifier, instanceHash a are mandatory parameters")
@@ -51,6 +58,8 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
         print("ENV_PREDICTION_HIGH_PERCENTAGE: \(Float(ENV_PREDICTION_HIGH_PERCENTAGE))")
         print("ENV_CustomColor: \(ENV_CustomColor)")
         print("ENV_HoldHandColor: \(ENV_HoldHandColor)")
+        print("enableDetect: \(enableDetect)")
+        print("enableGuide: \(enableGuide)")
 
 
         let eventResultMap: [String: Any] = [
@@ -64,7 +73,7 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
         // UserDefaults.standard.set(previewURL, forKey:"previewURL")
 
         let environmentalConditions = EnvironmentalConditions(
-            enableDetect: true, enableGuide: true,
+            enableDetect: enableDetect, enableGuide: enableGuide,
             BRIGHTNESS_HIGH_THRESHOLD: ENV_BRIGHTNESS_HIGH_THRESHOLD,
             BRIGHTNESS_LOW_THRESHOLD: ENV_BRIGHTNESS_LOW_THRESHOLD,
             PREDICTION_LOW_PERCENTAGE: ENV_PREDICTION_LOW_PERCENTAGE,
@@ -73,6 +82,9 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
             HoldHandColor: ENV_HoldHandColor
         )
 
+        self.holdHandColor = ENV_HoldHandColor;
+        self.processingColor = ENV_CustomColor;
+        
 
         self.assentifySdk = AssentifySdk(
             apiKey: apiKey,
@@ -106,17 +118,10 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
         UserDefaults.standard.set(nil, forKey:"OtherModel")
         self.stepDefinitions = configModel.stepDefinitions;
         self.configModel = configModel;
-//        let eventResultMap: [String: Any] = ["assentifySdkInitSuccess": true]
-//        DispatchQueue.main.async {
-//            self.sendEvent(withName: "AppResult",body : eventResultMap)
-//        }
-        self.assentifySdk!.getTemplates();
-        // navigateToViewController()
-    }
 
-    func onHasTemplates(templates: [TemplatesByCountry]) {
+        self.templatesByCountry =  self.assentifySdk!.getTemplates();
         do {
-            let jsonData = try JSONEncoder().encode(templates)
+            let jsonData = try JSONEncoder().encode(self.templatesByCountry)
             let jsonString = String(decoding: jsonData, as: UTF8.self)
             let eventResultMap: [String: Any]  =   ["AssentifySdkHasTemplates": jsonString, "assentifySdkInitSuccess": true]
             DispatchQueue.main.async {
@@ -125,6 +130,8 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
         } catch {
         }
     }
+
+
 
     override func supportedEvents() -> [String]! {
         return [
@@ -151,17 +158,19 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
             "onRetry",
             "onSend",
             "onError",
-            "onWrongTemplate"
+            "onWrongTemplate",
+            "onBackClick"
         ]
     }
 
 
-    func navigateToPassportController() {
+    func navigateToPassportController(language: String,
+                                      showCountDown: Bool ) {
         DispatchQueue.main.async {
 
             self.timeStarted =  self.getTimeUTC();
             if let currentViewController = UIViewController.currentViewController {
-                let viewController = PassportController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self)
+                let viewController = PassportController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self,holdHandColor:self.holdHandColor!,processingColor: self.processingColor!,language: language,showCountDown: showCountDown)
                 viewController.modalPresentationStyle = .fullScreen
                 currentViewController.present(viewController, animated: true, completion: nil)
             }
@@ -169,11 +178,12 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
     }
 
 
-    func navigateToOtherController() {
+    func navigateToOtherController(language: String,
+                                   showCountDown: Bool ) {
         DispatchQueue.main.async {
             self.timeStarted =  self.getTimeUTC();
             if let currentViewController = UIViewController.currentViewController {
-                let viewController = OtherController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self)
+                let viewController = OtherController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self,holdHandColor:self.holdHandColor!,processingColor: self.processingColor!,language: language,showCountDown: showCountDown)
                 viewController.modalPresentationStyle = .fullScreen
                 currentViewController.present(viewController, animated: true, completion: nil)
             }
@@ -181,7 +191,7 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
     }
 
 
-    func navigateToIDCardController(jsonStringKycDocumentDetails: String) {
+    func navigateToIDCardController(jsonStringKycDocumentDetails: String,language: String,flippingCard:Bool,showCountDown:Bool) {
         if(jsonStringKycDocumentDetails.isEmpty) {
             return;
         }
@@ -189,33 +199,33 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
         let kycDocumentDetails: [KycDocumentDetails] = try! JSONDecoder().decode([KycDocumentDetails].self, from: jsonData)
         DispatchQueue.main.async {
             self.timeStarted =  self.getTimeUTC();
-             if let currentViewController = UIViewController.currentViewController {
-                 let viewController = IDCardController(
-                     assentifySdk: self.assentifySdk!,
-                     kycDocumentDetails:kycDocumentDetails as Any as! [KycDocumentDetails],
-                     nativeAssentifySdk: self)
-                 viewController.modalPresentationStyle = .fullScreen
-                 currentViewController.present(viewController, animated: true, completion: nil)
-             }
+            if let currentViewController = UIApplication.shared.keyWindow?.rootViewController {
+                let viewController = IDCardController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self,holdHandColor: self.holdHandColor!,processingColor: self.processingColor!,kycDocumentDetails: kycDocumentDetails,language:language,flippingCard: flippingCard,titleID:self.getIdTitle(kycDocumentDetails:kycDocumentDetails ), showCountDown: showCountDown)
+                              viewController.modalPresentationStyle = .fullScreen
+                              currentViewController.present(viewController, animated: true, completion: nil)
+                          }
         }
     }
 
 
     @objc
-    func startScanPassport() {
+    func startScanPassport(_ language: String,
+                           showCountDown: Bool ) {
         /**  Nav To Passport Scan Page **/
-        navigateToPassportController()
+        navigateToPassportController(language: language, showCountDown: showCountDown)
     }
 
     @objc
-    func startScanOtherIDPage() {
+    func startScanOtherIDPage(_ language: String,
+                              showCountDown: Bool ) {
         /**  Nav To Other Scan Page **/
-        navigateToOtherController();
+        navigateToOtherController(language: language, showCountDown: showCountDown);
     }
 
     @objc
-    func startScanIDPage(_ kycDocumentDetails: String) {
-        navigateToIDCardController(jsonStringKycDocumentDetails: kycDocumentDetails)
+    func startScanIDPage(_ kycDocumentDetails: String ,language: String,flippingCard:Bool,
+                         showCountDown: Bool ) {
+        navigateToIDCardController(jsonStringKycDocumentDetails: kycDocumentDetails,language:language,flippingCard:flippingCard,showCountDown:showCountDown)
     }
 
     @objc
@@ -387,6 +397,22 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
         formatter.timeZone = TimeZone(abbreviation: "UTC")
         let utcTime = formatter.string(from: currentDate)
         return utcTime;
+    }
+
+    func getIdTitle(kycDocumentDetails: [KycDocumentDetails]) -> String {
+        var title = ""
+        
+        for country in self.templatesByCountry ?? [] {
+            for template in country.templates {
+                if !template.kycDocumentDetails.isEmpty {
+                    if kycDocumentDetails[0].templateProcessingKeyInformation == template.kycDocumentDetails[0].templateProcessingKeyInformation {
+                        title = template.kycDocumentType
+                    }
+                }
+            }
+        }
+        
+        return title
     }
 
 

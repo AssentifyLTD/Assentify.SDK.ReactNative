@@ -23,9 +23,21 @@ Pod::Spec.new do |s|
 
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"
-  s.resources = ["ios/id_card_rotation.mp4"]
+
+  s.resources = ["ios/Resources/info_icon.png",
+  "ios/Resources/zoom_in.png",
+  "ios/Resources/zoom_out.png",
+  "ios/Resources/expire.png",
+  "ios/Resources/id_warning.png",
+  "ios/Resources/warning.png",
+  "ios/Resources/sending.png",
+  "ios/Resources/id.gif",
+  "ios/Resources/passport.gif",
+  "ios/Resources/card.gif",
+  ]
+
 
   s.dependency "React-Core"
-  s.dependency "AssentifySdk", '0.0.14'
+  s.dependency "AssentifySdk", '0.0.31'
 
 end

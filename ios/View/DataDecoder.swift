@@ -21,27 +21,7 @@ struct StepsName {
     static let BlockLoader = "BlockLoader"
 }
 
-struct DocumentCaptureKeys {
-    static let FirstName = "OnBoardMe_IdentificationDocumentCapture_name"
-    static let LastName = "OnBoardMe_IdentificationDocumentCapture_surname"
-    static let DocumentType = "OnBoardMe_IdentificationDocumentCapture_Document_Type"
-    static let BirthDate = "OnBoardMe_IdentificationDocumentCapture_Birth_Date"
-    static let ExpiryDate = "OnBoardMe_IdentificationDocumentCapture_Expiry_Date"
-    static let DocumentNumber = "IdentificationDocumentCapture_Document_Number"
-    static let Sex = "OnBoardMe_IdentificationDocumentCapture_Sex"
-    static let Country = "OnBoardMe_IdentificationDocumentCapture_Country"
-    static let Nationality = "OnBoardMe_IdentificationDocumentCapture_Nationality"
-    static let FaceCapture = "OnBoardMe_IdentificationDocumentCapture_FaceCapture"
-    static let DocumentImage = "OnBoardMe_IdentificationDocumentCapture_Image"
-    static let BackImage = "OnBoardMe_IdentificationDocumentCapture_ID_BackImage"
-}
 
-struct FaceKeys {
-    static let BaseImage = "OnBoardMe_FaceImageAcquisition_BaseImage"
-    static let SecondImage = "OnBoardMe_FaceImageAcquisition_SecondImage"
-    static let Percentage = "OnBoardMe_FaceImageAcquisition_Percentage"
-
-}
 
 struct WrapUpKeys {
     static let TimeEnded = "OnBoardMe_WrapUp_TimeEnded"
@@ -58,10 +38,7 @@ struct BlockLoaderKeys {
     static let interactionID = "OnBoardMe_BlockLoader_Interaction"
 }
 
-struct ContextAwareSigningKeys {
-    static let DocumentURL = "OnBoardMe_ContextAwareSigning_DocumentURL"
-    static let SignatureURL = "OnBoardMe_ContextAwareSigning_SignatureURL"
-}
+
 
 
 
@@ -98,19 +75,21 @@ func getExpiryDate(date: String) -> String {
 }
 
 
+
 func passportModelToJsonString(dataModel: PassportExtractedModel?) -> String? {
     guard let dataModel = dataModel else { return nil }
-
+    
     var jsonDict: [String: Any] = [:]
-
+    
     jsonDict["outputProperties"] = dataModel.outputProperties
+    jsonDict["transformedProperties"] = dataModel.transformedProperties
     jsonDict["extractedData"] = dataModel.extractedData
     jsonDict["imageUrl"] = dataModel.imageUrl
     jsonDict["faces"] = dataModel.faces
-
+    
     if let identificationDocumentCapture = dataModel.identificationDocumentCapture {
         var idCaptureDict: [String: Any] = [:]
-
+        
         idCaptureDict["name"] = identificationDocumentCapture.name
         idCaptureDict["surname"] = identificationDocumentCapture.surname
         idCaptureDict["documentType"] = identificationDocumentCapture.Document_Type
@@ -120,7 +99,7 @@ func passportModelToJsonString(dataModel: PassportExtractedModel?) -> String? {
         idCaptureDict["expiryDate"] = identificationDocumentCapture.Expiry_Date
         idCaptureDict["country"] = identificationDocumentCapture.Country
         idCaptureDict["nationality"] = identificationDocumentCapture.Nationality
-        idCaptureDict["iDType"] = identificationDocumentCapture.IDType
+        idCaptureDict["idType"] = identificationDocumentCapture.IDType
         idCaptureDict["faceCapture"] = identificationDocumentCapture.FaceCapture
         idCaptureDict["image"] = identificationDocumentCapture.Image
         idCaptureDict["isSkippedAfterNFails"] = identificationDocumentCapture.IsSkippedAfterNFails
@@ -136,67 +115,67 @@ func passportModelToJsonString(dataModel: PassportExtractedModel?) -> String? {
         idCaptureDict["isTampering"] = identificationDocumentCapture.IsTampering
         idCaptureDict["tamperHeatMap"] = identificationDocumentCapture.TamperHeatMap
         idCaptureDict["isBackTampering"] = identificationDocumentCapture.IsBackTampering
-        idCaptureDict["nackTamperHeatmap"] = identificationDocumentCapture.BackTamperHeatmap
+        idCaptureDict["backTamperHeatmap"] = identificationDocumentCapture.BackTamperHeatmap
         idCaptureDict["originalFrontImage"] = identificationDocumentCapture.OriginalFrontImage
         idCaptureDict["originalBackImage"] = identificationDocumentCapture.OriginalBackImage
         idCaptureDict["ghostImage"] = identificationDocumentCapture.GhostImage
-        idCaptureDict["iDMaritalStatus"] = identificationDocumentCapture.ID_MaritalStatus
-        idCaptureDict["iDDateOfIssuance"] = identificationDocumentCapture.ID_DateOfIssuance
-        idCaptureDict["iDCivilRegisterNumber"] = identificationDocumentCapture.ID_CivilRegisterNumber
-        idCaptureDict["iDPlaceOfResidence"] = identificationDocumentCapture.ID_PlaceOfResidence
-        idCaptureDict["iDProvince"] = identificationDocumentCapture.ID_Province
-        idCaptureDict["iDGovernorate"] = identificationDocumentCapture.ID_Governorate
-        idCaptureDict["iDMothersName"] = identificationDocumentCapture.ID_MothersName
-        idCaptureDict["iDFathersName"] = identificationDocumentCapture.ID_FathersName
-        idCaptureDict["iDPlaceOfBirth"] = identificationDocumentCapture.ID_PlaceOfBirth
-        idCaptureDict["iDBackImage"] = identificationDocumentCapture.ID_BackImage
-        idCaptureDict["iDBloodType"] = identificationDocumentCapture.ID_BloodType
-        idCaptureDict["iDDrivingCategory"] = identificationDocumentCapture.ID_DrivingCategory
-        idCaptureDict["iDIssuanceAuthority"] = identificationDocumentCapture.ID_IssuanceAuthority
-        idCaptureDict["iDArmyStatus"] = identificationDocumentCapture.ID_ArmyStatus
-        idCaptureDict["iDProfession"] = identificationDocumentCapture.ID_Profession
-        idCaptureDict["iDUniqueNumber"] = identificationDocumentCapture.ID_UniqueNumber
-        idCaptureDict["iDDocumentTypeNumber"] = identificationDocumentCapture.ID_DocumentTypeNumber
-        idCaptureDict["iDFees"] = identificationDocumentCapture.ID_Fees
-        idCaptureDict["iDReference"] = identificationDocumentCapture.ID_Reference
-        idCaptureDict["iDRegion"] = identificationDocumentCapture.ID_Region
-        idCaptureDict["iDRegistrationLocation"] = identificationDocumentCapture.ID_RegistrationLocation
-        idCaptureDict["iDFaceColor"] = identificationDocumentCapture.ID_FaceColor
-        idCaptureDict["iDEyeColor"] = identificationDocumentCapture.ID_EyeColor
-        idCaptureDict["iDSpecialMarks"] = identificationDocumentCapture.ID_SpecialMarks
-        idCaptureDict["iDGuardianName"] = identificationDocumentCapture.ID_GuardianName
-        idCaptureDict["iDCountryOfStay"] = identificationDocumentCapture.ID_CountryOfStay
-        idCaptureDict["iDIdentityNumber"] = identificationDocumentCapture.ID_IdentityNumber
-        idCaptureDict["iDPresentAddress"] = identificationDocumentCapture.ID_PresentAddress
-        idCaptureDict["iDPermanentAddress"] = identificationDocumentCapture.ID_PermanentAddress
-        idCaptureDict["iDFamilyNumber"] = identificationDocumentCapture.ID_FamilyNumber
-        idCaptureDict["iDIdentityNumberBack"] = identificationDocumentCapture.ID_IdentityNumberBack
+        idCaptureDict["idMaritalStatus"] = identificationDocumentCapture.ID_MaritalStatus
+        idCaptureDict["idDateOfIssuance"] = identificationDocumentCapture.ID_DateOfIssuance
+        idCaptureDict["idCivilRegisterNumber"] = identificationDocumentCapture.ID_CivilRegisterNumber
+        idCaptureDict["idPlaceOfResidence"] = identificationDocumentCapture.ID_PlaceOfResidence
+        idCaptureDict["idProvince"] = identificationDocumentCapture.ID_Province
+        idCaptureDict["idGovernorate"] = identificationDocumentCapture.ID_Governorate
+        idCaptureDict["idMothersName"] = identificationDocumentCapture.ID_MothersName
+        idCaptureDict["idFathersName"] = identificationDocumentCapture.ID_FathersName
+        idCaptureDict["idPlaceOfBirth"] = identificationDocumentCapture.ID_PlaceOfBirth
+        idCaptureDict["idBackImage"] = identificationDocumentCapture.ID_BackImage
+        idCaptureDict["idBloodType"] = identificationDocumentCapture.ID_BloodType
+        idCaptureDict["idDrivingCategory"] = identificationDocumentCapture.ID_DrivingCategory
+        idCaptureDict["idIssuanceAuthority"] = identificationDocumentCapture.ID_IssuanceAuthority
+        idCaptureDict["idArmyStatus"] = identificationDocumentCapture.ID_ArmyStatus
+        idCaptureDict["idProfession"] = identificationDocumentCapture.ID_Profession
+        idCaptureDict["idUniqueNumber"] = identificationDocumentCapture.ID_UniqueNumber
+        idCaptureDict["idDocumentTypeNumber"] = identificationDocumentCapture.ID_DocumentTypeNumber
+        idCaptureDict["idFees"] = identificationDocumentCapture.ID_Fees
+        idCaptureDict["idReference"] = identificationDocumentCapture.ID_Reference
+        idCaptureDict["idRegion"] = identificationDocumentCapture.ID_Region
+        idCaptureDict["idRegistrationLocation"] = identificationDocumentCapture.ID_RegistrationLocation
+        idCaptureDict["idFaceColor"] = identificationDocumentCapture.ID_FaceColor
+        idCaptureDict["idEyeColor"] = identificationDocumentCapture.ID_EyeColor
+        idCaptureDict["idSpecialMarks"] = identificationDocumentCapture.ID_SpecialMarks
+        idCaptureDict["idCountryOfStay"] = identificationDocumentCapture.ID_CountryOfStay
+        idCaptureDict["idIdentityNumber"] = identificationDocumentCapture.ID_IdentityNumber
+        idCaptureDict["idPresentAddress"] = identificationDocumentCapture.ID_PresentAddress
+        idCaptureDict["idPermanentAddress"] = identificationDocumentCapture.ID_PermanentAddress
+        idCaptureDict["idFamilyNumber"] = identificationDocumentCapture.ID_FamilyNumber
+        idCaptureDict["identityNumberBack"] = identificationDocumentCapture.ID_IdentityNumberBack
 
+        
         jsonDict["identificationDocumentCapture"] = idCaptureDict
     }
-
+    
     if let jsonData = try? JSONSerialization.data(withJSONObject: jsonDict, options: .prettyPrinted) {
         return String(data: jsonData, encoding: .utf8)
     }
-
+    
     return nil
 }
 
 func faceModelToJsonString(dataModel: FaceExtractedModel?) -> String? {
     guard let dataModel = dataModel else { return nil }
-
+    
     var jsonDict: [String: Any] = [:]
-
+    
     jsonDict["outputProperties"] = dataModel.outputProperties
     jsonDict["extractedData"] = dataModel.extractedData
     jsonDict["baseImageFace"] = dataModel.baseImageFace
     jsonDict["secondImageFace"] = dataModel.secondImageFace
-    jsonDict["IsLive"] = dataModel.isLive
-    jsonDict["PercentageMatch"] = dataModel.percentageMatch
-
+    jsonDict["isLive"] = dataModel.isLive
+    jsonDict["percentageMatch"] = dataModel.percentageMatch
+    
     if let identificationDocumentCapture = dataModel.identificationDocumentCapture {
         var idCaptureDict: [String: Any] = [:]
-
+        
         idCaptureDict["name"] = identificationDocumentCapture.name
         idCaptureDict["surname"] = identificationDocumentCapture.surname
         idCaptureDict["documentType"] = identificationDocumentCapture.Document_Type
@@ -206,7 +185,7 @@ func faceModelToJsonString(dataModel: FaceExtractedModel?) -> String? {
         idCaptureDict["expiryDate"] = identificationDocumentCapture.Expiry_Date
         idCaptureDict["country"] = identificationDocumentCapture.Country
         idCaptureDict["nationality"] = identificationDocumentCapture.Nationality
-        idCaptureDict["iDType"] = identificationDocumentCapture.IDType
+        idCaptureDict["idType"] = identificationDocumentCapture.IDType
         idCaptureDict["faceCapture"] = identificationDocumentCapture.FaceCapture
         idCaptureDict["image"] = identificationDocumentCapture.Image
         idCaptureDict["isSkippedAfterNFails"] = identificationDocumentCapture.IsSkippedAfterNFails
@@ -222,65 +201,66 @@ func faceModelToJsonString(dataModel: FaceExtractedModel?) -> String? {
         idCaptureDict["isTampering"] = identificationDocumentCapture.IsTampering
         idCaptureDict["tamperHeatMap"] = identificationDocumentCapture.TamperHeatMap
         idCaptureDict["isBackTampering"] = identificationDocumentCapture.IsBackTampering
-        idCaptureDict["nackTamperHeatmap"] = identificationDocumentCapture.BackTamperHeatmap
+        idCaptureDict["backTamperHeatmap"] = identificationDocumentCapture.BackTamperHeatmap
         idCaptureDict["originalFrontImage"] = identificationDocumentCapture.OriginalFrontImage
         idCaptureDict["originalBackImage"] = identificationDocumentCapture.OriginalBackImage
         idCaptureDict["ghostImage"] = identificationDocumentCapture.GhostImage
-        idCaptureDict["iDMaritalStatus"] = identificationDocumentCapture.ID_MaritalStatus
-        idCaptureDict["iDDateOfIssuance"] = identificationDocumentCapture.ID_DateOfIssuance
-        idCaptureDict["iDCivilRegisterNumber"] = identificationDocumentCapture.ID_CivilRegisterNumber
-        idCaptureDict["iDPlaceOfResidence"] = identificationDocumentCapture.ID_PlaceOfResidence
-        idCaptureDict["iDProvince"] = identificationDocumentCapture.ID_Province
-        idCaptureDict["iDGovernorate"] = identificationDocumentCapture.ID_Governorate
-        idCaptureDict["iDMothersName"] = identificationDocumentCapture.ID_MothersName
-        idCaptureDict["iDFathersName"] = identificationDocumentCapture.ID_FathersName
-        idCaptureDict["iDPlaceOfBirth"] = identificationDocumentCapture.ID_PlaceOfBirth
-        idCaptureDict["iDBackImage"] = identificationDocumentCapture.ID_BackImage
-        idCaptureDict["iDBloodType"] = identificationDocumentCapture.ID_BloodType
-        idCaptureDict["iDDrivingCategory"] = identificationDocumentCapture.ID_DrivingCategory
-        idCaptureDict["iDIssuanceAuthority"] = identificationDocumentCapture.ID_IssuanceAuthority
-        idCaptureDict["iDArmyStatus"] = identificationDocumentCapture.ID_ArmyStatus
-        idCaptureDict["iDProfession"] = identificationDocumentCapture.ID_Profession
-        idCaptureDict["iDUniqueNumber"] = identificationDocumentCapture.ID_UniqueNumber
-        idCaptureDict["iDDocumentTypeNumber"] = identificationDocumentCapture.ID_DocumentTypeNumber
-        idCaptureDict["iDFees"] = identificationDocumentCapture.ID_Fees
-        idCaptureDict["iDReference"] = identificationDocumentCapture.ID_Reference
-        idCaptureDict["iDRegion"] = identificationDocumentCapture.ID_Region
-        idCaptureDict["iDRegistrationLocation"] = identificationDocumentCapture.ID_RegistrationLocation
-        idCaptureDict["iDFaceColor"] = identificationDocumentCapture.ID_FaceColor
-        idCaptureDict["iDEyeColor"] = identificationDocumentCapture.ID_EyeColor
-        idCaptureDict["iDSpecialMarks"] = identificationDocumentCapture.ID_SpecialMarks
-        idCaptureDict["iDGuardianName"] = identificationDocumentCapture.ID_GuardianName
-        idCaptureDict["iDCountryOfStay"] = identificationDocumentCapture.ID_CountryOfStay
-        idCaptureDict["iDIdentityNumber"] = identificationDocumentCapture.ID_IdentityNumber
-        idCaptureDict["iDPresentAddress"] = identificationDocumentCapture.ID_PresentAddress
-        idCaptureDict["iDPermanentAddress"] = identificationDocumentCapture.ID_PermanentAddress
-        idCaptureDict["iDFamilyNumber"] = identificationDocumentCapture.ID_FamilyNumber
-        idCaptureDict["iDIdentityNumberBack"] = identificationDocumentCapture.ID_IdentityNumberBack
+        idCaptureDict["idMaritalStatus"] = identificationDocumentCapture.ID_MaritalStatus
+        idCaptureDict["idDateOfIssuance"] = identificationDocumentCapture.ID_DateOfIssuance
+        idCaptureDict["idCivilRegisterNumber"] = identificationDocumentCapture.ID_CivilRegisterNumber
+        idCaptureDict["idPlaceOfResidence"] = identificationDocumentCapture.ID_PlaceOfResidence
+        idCaptureDict["idProvince"] = identificationDocumentCapture.ID_Province
+        idCaptureDict["idGovernorate"] = identificationDocumentCapture.ID_Governorate
+        idCaptureDict["idMothersName"] = identificationDocumentCapture.ID_MothersName
+        idCaptureDict["idFathersName"] = identificationDocumentCapture.ID_FathersName
+        idCaptureDict["idPlaceOfBirth"] = identificationDocumentCapture.ID_PlaceOfBirth
+        idCaptureDict["idBackImage"] = identificationDocumentCapture.ID_BackImage
+        idCaptureDict["idBloodType"] = identificationDocumentCapture.ID_BloodType
+        idCaptureDict["idDrivingCategory"] = identificationDocumentCapture.ID_DrivingCategory
+        idCaptureDict["idIssuanceAuthority"] = identificationDocumentCapture.ID_IssuanceAuthority
+        idCaptureDict["idArmyStatus"] = identificationDocumentCapture.ID_ArmyStatus
+        idCaptureDict["idProfession"] = identificationDocumentCapture.ID_Profession
+        idCaptureDict["idUniqueNumber"] = identificationDocumentCapture.ID_UniqueNumber
+        idCaptureDict["idDocumentTypeNumber"] = identificationDocumentCapture.ID_DocumentTypeNumber
+        idCaptureDict["idFees"] = identificationDocumentCapture.ID_Fees
+        idCaptureDict["idReference"] = identificationDocumentCapture.ID_Reference
+        idCaptureDict["idRegion"] = identificationDocumentCapture.ID_Region
+        idCaptureDict["idRegistrationLocation"] = identificationDocumentCapture.ID_RegistrationLocation
+        idCaptureDict["idFaceColor"] = identificationDocumentCapture.ID_FaceColor
+        idCaptureDict["idEyeColor"] = identificationDocumentCapture.ID_EyeColor
+        idCaptureDict["idSpecialMarks"] = identificationDocumentCapture.ID_SpecialMarks
+        idCaptureDict["idCountryOfStay"] = identificationDocumentCapture.ID_CountryOfStay
+        idCaptureDict["idIdentityNumber"] = identificationDocumentCapture.ID_IdentityNumber
+        idCaptureDict["idPresentAddress"] = identificationDocumentCapture.ID_PresentAddress
+        idCaptureDict["idPermanentAddress"] = identificationDocumentCapture.ID_PermanentAddress
+        idCaptureDict["idFamilyNumber"] = identificationDocumentCapture.ID_FamilyNumber
+        idCaptureDict["identityNumberBack"] = identificationDocumentCapture.ID_IdentityNumberBack
 
+        
         jsonDict["identificationDocumentCapture"] = idCaptureDict
     }
-
+    
     if let jsonData = try? JSONSerialization.data(withJSONObject: jsonDict, options: .prettyPrinted) {
         return String(data: jsonData, encoding: .utf8)
     }
-
+    
     return nil
 }
 
 func iDModelToJsonString(dataModel: IDExtractedModel?) -> String? {
     guard let dataModel = dataModel else { return nil }
-
+    
     var jsonDict: [String: Any] = [:]
-
+    
     jsonDict["outputProperties"] = dataModel.outputProperties
+    jsonDict["transformedProperties"] = dataModel.transformedProperties
     jsonDict["extractedData"] = dataModel.extractedData
     jsonDict["imageUrl"] = dataModel.imageUrl
     jsonDict["faces"] = dataModel.faces
-
+    
     if let identificationDocumentCapture = dataModel.identificationDocumentCapture {
         var idCaptureDict: [String: Any] = [:]
-
+        
         idCaptureDict["name"] = identificationDocumentCapture.name
         idCaptureDict["surname"] = identificationDocumentCapture.surname
         idCaptureDict["documentType"] = identificationDocumentCapture.Document_Type
@@ -290,7 +270,7 @@ func iDModelToJsonString(dataModel: IDExtractedModel?) -> String? {
         idCaptureDict["expiryDate"] = identificationDocumentCapture.Expiry_Date
         idCaptureDict["country"] = identificationDocumentCapture.Country
         idCaptureDict["nationality"] = identificationDocumentCapture.Nationality
-        idCaptureDict["iDType"] = identificationDocumentCapture.IDType
+        idCaptureDict["idType"] = identificationDocumentCapture.IDType
         idCaptureDict["faceCapture"] = identificationDocumentCapture.FaceCapture
         idCaptureDict["image"] = identificationDocumentCapture.Image
         idCaptureDict["isSkippedAfterNFails"] = identificationDocumentCapture.IsSkippedAfterNFails
@@ -306,67 +286,69 @@ func iDModelToJsonString(dataModel: IDExtractedModel?) -> String? {
         idCaptureDict["isTampering"] = identificationDocumentCapture.IsTampering
         idCaptureDict["tamperHeatMap"] = identificationDocumentCapture.TamperHeatMap
         idCaptureDict["isBackTampering"] = identificationDocumentCapture.IsBackTampering
-        idCaptureDict["nackTamperHeatmap"] = identificationDocumentCapture.BackTamperHeatmap
+        idCaptureDict["backTamperHeatmap"] = identificationDocumentCapture.BackTamperHeatmap
         idCaptureDict["originalFrontImage"] = identificationDocumentCapture.OriginalFrontImage
         idCaptureDict["originalBackImage"] = identificationDocumentCapture.OriginalBackImage
         idCaptureDict["ghostImage"] = identificationDocumentCapture.GhostImage
-        idCaptureDict["iDMaritalStatus"] = identificationDocumentCapture.ID_MaritalStatus
-        idCaptureDict["iDDateOfIssuance"] = identificationDocumentCapture.ID_DateOfIssuance
-        idCaptureDict["iDCivilRegisterNumber"] = identificationDocumentCapture.ID_CivilRegisterNumber
-        idCaptureDict["iDPlaceOfResidence"] = identificationDocumentCapture.ID_PlaceOfResidence
-        idCaptureDict["iDProvince"] = identificationDocumentCapture.ID_Province
-        idCaptureDict["iDGovernorate"] = identificationDocumentCapture.ID_Governorate
-        idCaptureDict["iDMothersName"] = identificationDocumentCapture.ID_MothersName
-        idCaptureDict["iDFathersName"] = identificationDocumentCapture.ID_FathersName
-        idCaptureDict["iDPlaceOfBirth"] = identificationDocumentCapture.ID_PlaceOfBirth
-        idCaptureDict["iDBackImage"] = identificationDocumentCapture.ID_BackImage
-        idCaptureDict["iDBloodType"] = identificationDocumentCapture.ID_BloodType
-        idCaptureDict["iDDrivingCategory"] = identificationDocumentCapture.ID_DrivingCategory
-        idCaptureDict["iDIssuanceAuthority"] = identificationDocumentCapture.ID_IssuanceAuthority
-        idCaptureDict["iDArmyStatus"] = identificationDocumentCapture.ID_ArmyStatus
-        idCaptureDict["iDProfession"] = identificationDocumentCapture.ID_Profession
-        idCaptureDict["iDUniqueNumber"] = identificationDocumentCapture.ID_UniqueNumber
-        idCaptureDict["iDDocumentTypeNumber"] = identificationDocumentCapture.ID_DocumentTypeNumber
-        idCaptureDict["iDFees"] = identificationDocumentCapture.ID_Fees
-        idCaptureDict["iDReference"] = identificationDocumentCapture.ID_Reference
-        idCaptureDict["iDRegion"] = identificationDocumentCapture.ID_Region
-        idCaptureDict["iDRegistrationLocation"] = identificationDocumentCapture.ID_RegistrationLocation
-        idCaptureDict["iDFaceColor"] = identificationDocumentCapture.ID_FaceColor
-        idCaptureDict["iDEyeColor"] = identificationDocumentCapture.ID_EyeColor
-        idCaptureDict["iDSpecialMarks"] = identificationDocumentCapture.ID_SpecialMarks
-        idCaptureDict["iDGuardianName"] = identificationDocumentCapture.ID_GuardianName
-        idCaptureDict["iDCountryOfStay"] = identificationDocumentCapture.ID_CountryOfStay
-        idCaptureDict["iDIdentityNumber"] = identificationDocumentCapture.ID_IdentityNumber
-        idCaptureDict["iDPresentAddress"] = identificationDocumentCapture.ID_PresentAddress
-        idCaptureDict["iDPermanentAddress"] = identificationDocumentCapture.ID_PermanentAddress
-        idCaptureDict["iDFamilyNumber"] = identificationDocumentCapture.ID_FamilyNumber
-        idCaptureDict["iDIdentityNumberBack"] = identificationDocumentCapture.ID_IdentityNumberBack
+        idCaptureDict["idMaritalStatus"] = identificationDocumentCapture.ID_MaritalStatus
+        idCaptureDict["idDateOfIssuance"] = identificationDocumentCapture.ID_DateOfIssuance
+        idCaptureDict["idCivilRegisterNumber"] = identificationDocumentCapture.ID_CivilRegisterNumber
+        idCaptureDict["idPlaceOfResidence"] = identificationDocumentCapture.ID_PlaceOfResidence
+        idCaptureDict["idProvince"] = identificationDocumentCapture.ID_Province
+        idCaptureDict["idGovernorate"] = identificationDocumentCapture.ID_Governorate
+        idCaptureDict["idMothersName"] = identificationDocumentCapture.ID_MothersName
+        idCaptureDict["idFathersName"] = identificationDocumentCapture.ID_FathersName
+        idCaptureDict["idPlaceOfBirth"] = identificationDocumentCapture.ID_PlaceOfBirth
+        idCaptureDict["idBackImage"] = identificationDocumentCapture.ID_BackImage
+        idCaptureDict["idBloodType"] = identificationDocumentCapture.ID_BloodType
+        idCaptureDict["idDrivingCategory"] = identificationDocumentCapture.ID_DrivingCategory
+        idCaptureDict["idIssuanceAuthority"] = identificationDocumentCapture.ID_IssuanceAuthority
+        idCaptureDict["idArmyStatus"] = identificationDocumentCapture.ID_ArmyStatus
+        idCaptureDict["idProfession"] = identificationDocumentCapture.ID_Profession
+        idCaptureDict["idUniqueNumber"] = identificationDocumentCapture.ID_UniqueNumber
+        idCaptureDict["idDocumentTypeNumber"] = identificationDocumentCapture.ID_DocumentTypeNumber
+        idCaptureDict["idFees"] = identificationDocumentCapture.ID_Fees
+        idCaptureDict["idReference"] = identificationDocumentCapture.ID_Reference
+        idCaptureDict["idRegion"] = identificationDocumentCapture.ID_Region
+        idCaptureDict["idRegistrationLocation"] = identificationDocumentCapture.ID_RegistrationLocation
+        idCaptureDict["idFaceColor"] = identificationDocumentCapture.ID_FaceColor
+        idCaptureDict["idEyeColor"] = identificationDocumentCapture.ID_EyeColor
+        idCaptureDict["idSpecialMarks"] = identificationDocumentCapture.ID_SpecialMarks
+        idCaptureDict["idCountryOfStay"] = identificationDocumentCapture.ID_CountryOfStay
+        idCaptureDict["idIdentityNumber"] = identificationDocumentCapture.ID_IdentityNumber
+        idCaptureDict["idPresentAddress"] = identificationDocumentCapture.ID_PresentAddress
+        idCaptureDict["idPermanentAddress"] = identificationDocumentCapture.ID_PermanentAddress
+        idCaptureDict["idFamilyNumber"] = identificationDocumentCapture.ID_FamilyNumber
+        idCaptureDict["identityNumberBack"] = identificationDocumentCapture.ID_IdentityNumberBack
 
+        
         jsonDict["identificationDocumentCapture"] = idCaptureDict
     }
-
+    
     if let jsonData = try? JSONSerialization.data(withJSONObject: jsonDict, options: .prettyPrinted) {
         return String(data: jsonData, encoding: .utf8)
     }
-
+    
     return nil
 }
 
 
 func otherModelToJsonString(dataModel: OtherExtractedModel?) -> String? {
     guard let dataModel = dataModel else { return nil }
-
+    
     var jsonDict: [String: Any] = [:]
-
+    
     jsonDict["outputProperties"] = dataModel.outputProperties
+    jsonDict["transformedProperties"] = dataModel.transformedProperties
     jsonDict["extractedData"] = dataModel.extractedData
     jsonDict["additionalDetails"] = dataModel.additionalDetails
+    jsonDict["transformedDetails"] = dataModel.transformedDetails
     jsonDict["imageUrl"] = dataModel.imageUrl
     jsonDict["faces"] = dataModel.faces
-
+    
     if let identificationDocumentCapture = dataModel.identificationDocumentCapture {
         var idCaptureDict: [String: Any] = [:]
-
+        
         idCaptureDict["name"] = identificationDocumentCapture.name
         idCaptureDict["surname"] = identificationDocumentCapture.surname
         idCaptureDict["documentType"] = identificationDocumentCapture.Document_Type
@@ -376,7 +358,7 @@ func otherModelToJsonString(dataModel: OtherExtractedModel?) -> String? {
         idCaptureDict["expiryDate"] = identificationDocumentCapture.Expiry_Date
         idCaptureDict["country"] = identificationDocumentCapture.Country
         idCaptureDict["nationality"] = identificationDocumentCapture.Nationality
-        idCaptureDict["iDType"] = identificationDocumentCapture.IDType
+        idCaptureDict["idType"] = identificationDocumentCapture.IDType
         idCaptureDict["faceCapture"] = identificationDocumentCapture.FaceCapture
         idCaptureDict["image"] = identificationDocumentCapture.Image
         idCaptureDict["isSkippedAfterNFails"] = identificationDocumentCapture.IsSkippedAfterNFails
@@ -392,50 +374,96 @@ func otherModelToJsonString(dataModel: OtherExtractedModel?) -> String? {
         idCaptureDict["isTampering"] = identificationDocumentCapture.IsTampering
         idCaptureDict["tamperHeatMap"] = identificationDocumentCapture.TamperHeatMap
         idCaptureDict["isBackTampering"] = identificationDocumentCapture.IsBackTampering
-        idCaptureDict["nackTamperHeatmap"] = identificationDocumentCapture.BackTamperHeatmap
+        idCaptureDict["backTamperHeatmap"] = identificationDocumentCapture.BackTamperHeatmap
         idCaptureDict["originalFrontImage"] = identificationDocumentCapture.OriginalFrontImage
         idCaptureDict["originalBackImage"] = identificationDocumentCapture.OriginalBackImage
         idCaptureDict["ghostImage"] = identificationDocumentCapture.GhostImage
-        idCaptureDict["iDMaritalStatus"] = identificationDocumentCapture.ID_MaritalStatus
-        idCaptureDict["iDDateOfIssuance"] = identificationDocumentCapture.ID_DateOfIssuance
-        idCaptureDict["iDCivilRegisterNumber"] = identificationDocumentCapture.ID_CivilRegisterNumber
-        idCaptureDict["iDPlaceOfResidence"] = identificationDocumentCapture.ID_PlaceOfResidence
-        idCaptureDict["iDProvince"] = identificationDocumentCapture.ID_Province
-        idCaptureDict["iDGovernorate"] = identificationDocumentCapture.ID_Governorate
-        idCaptureDict["iDMothersName"] = identificationDocumentCapture.ID_MothersName
-        idCaptureDict["iDFathersName"] = identificationDocumentCapture.ID_FathersName
-        idCaptureDict["iDPlaceOfBirth"] = identificationDocumentCapture.ID_PlaceOfBirth
-        idCaptureDict["iDBackImage"] = identificationDocumentCapture.ID_BackImage
-        idCaptureDict["iDBloodType"] = identificationDocumentCapture.ID_BloodType
-        idCaptureDict["iDDrivingCategory"] = identificationDocumentCapture.ID_DrivingCategory
-        idCaptureDict["iDIssuanceAuthority"] = identificationDocumentCapture.ID_IssuanceAuthority
-        idCaptureDict["iDArmyStatus"] = identificationDocumentCapture.ID_ArmyStatus
-        idCaptureDict["iDProfession"] = identificationDocumentCapture.ID_Profession
-        idCaptureDict["iDUniqueNumber"] = identificationDocumentCapture.ID_UniqueNumber
-        idCaptureDict["iDDocumentTypeNumber"] = identificationDocumentCapture.ID_DocumentTypeNumber
-        idCaptureDict["iDFees"] = identificationDocumentCapture.ID_Fees
-        idCaptureDict["iDReference"] = identificationDocumentCapture.ID_Reference
-        idCaptureDict["iDRegion"] = identificationDocumentCapture.ID_Region
-        idCaptureDict["iDRegistrationLocation"] = identificationDocumentCapture.ID_RegistrationLocation
-        idCaptureDict["iDFaceColor"] = identificationDocumentCapture.ID_FaceColor
-        idCaptureDict["iDEyeColor"] = identificationDocumentCapture.ID_EyeColor
-        idCaptureDict["iDSpecialMarks"] = identificationDocumentCapture.ID_SpecialMarks
-        idCaptureDict["iDGuardianName"] = identificationDocumentCapture.ID_GuardianName
-        idCaptureDict["iDCountryOfStay"] = identificationDocumentCapture.ID_CountryOfStay
-        idCaptureDict["iDIdentityNumber"] = identificationDocumentCapture.ID_IdentityNumber
-        idCaptureDict["iDPresentAddress"] = identificationDocumentCapture.ID_PresentAddress
-        idCaptureDict["iDPermanentAddress"] = identificationDocumentCapture.ID_PermanentAddress
-        idCaptureDict["iDFamilyNumber"] = identificationDocumentCapture.ID_FamilyNumber
-        idCaptureDict["iDIdentityNumberBack"] = identificationDocumentCapture.ID_IdentityNumberBack
+        idCaptureDict["idMaritalStatus"] = identificationDocumentCapture.ID_MaritalStatus
+        idCaptureDict["idDateOfIssuance"] = identificationDocumentCapture.ID_DateOfIssuance
+        idCaptureDict["idCivilRegisterNumber"] = identificationDocumentCapture.ID_CivilRegisterNumber
+        idCaptureDict["idPlaceOfResidence"] = identificationDocumentCapture.ID_PlaceOfResidence
+        idCaptureDict["idProvince"] = identificationDocumentCapture.ID_Province
+        idCaptureDict["idGovernorate"] = identificationDocumentCapture.ID_Governorate
+        idCaptureDict["idMothersName"] = identificationDocumentCapture.ID_MothersName
+        idCaptureDict["idFathersName"] = identificationDocumentCapture.ID_FathersName
+        idCaptureDict["idPlaceOfBirth"] = identificationDocumentCapture.ID_PlaceOfBirth
+        idCaptureDict["idBackImage"] = identificationDocumentCapture.ID_BackImage
+        idCaptureDict["idBloodType"] = identificationDocumentCapture.ID_BloodType
+        idCaptureDict["idDrivingCategory"] = identificationDocumentCapture.ID_DrivingCategory
+        idCaptureDict["idIssuanceAuthority"] = identificationDocumentCapture.ID_IssuanceAuthority
+        idCaptureDict["idArmyStatus"] = identificationDocumentCapture.ID_ArmyStatus
+        idCaptureDict["idProfession"] = identificationDocumentCapture.ID_Profession
+        idCaptureDict["idUniqueNumber"] = identificationDocumentCapture.ID_UniqueNumber
+        idCaptureDict["idDocumentTypeNumber"] = identificationDocumentCapture.ID_DocumentTypeNumber
+        idCaptureDict["idFees"] = identificationDocumentCapture.ID_Fees
+        idCaptureDict["idReference"] = identificationDocumentCapture.ID_Reference
+        idCaptureDict["idRegion"] = identificationDocumentCapture.ID_Region
+        idCaptureDict["idRegistrationLocation"] = identificationDocumentCapture.ID_RegistrationLocation
+        idCaptureDict["idFaceColor"] = identificationDocumentCapture.ID_FaceColor
+        idCaptureDict["idEyeColor"] = identificationDocumentCapture.ID_EyeColor
+        idCaptureDict["idSpecialMarks"] = identificationDocumentCapture.ID_SpecialMarks
+        idCaptureDict["idCountryOfStay"] = identificationDocumentCapture.ID_CountryOfStay
+        idCaptureDict["idIdentityNumber"] = identificationDocumentCapture.ID_IdentityNumber
+        idCaptureDict["idPresentAddress"] = identificationDocumentCapture.ID_PresentAddress
+        idCaptureDict["idPermanentAddress"] = identificationDocumentCapture.ID_PermanentAddress
+        idCaptureDict["idFamilyNumber"] = identificationDocumentCapture.ID_FamilyNumber
+        idCaptureDict["identityNumberBack"] = identificationDocumentCapture.ID_IdentityNumberBack
 
+        
         jsonDict["identificationDocumentCapture"] = idCaptureDict
     }
-
+    
     if let jsonData = try? JSONSerialization.data(withJSONObject: jsonDict, options: .prettyPrinted) {
         return String(data: jsonData, encoding: .utf8)
     }
-
+    
     return nil
 }
+
+
+func parseSubmitRequestModelList(jsonString: String) -> [SubmitRequestModel]? {
+    guard let data = jsonString.data(using: .utf8) else { return nil }
+    
+    do {
+        if let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] {
+            var submitRequestList = [SubmitRequestModel]()
+            
+            for jsonObject in jsonArray {
+                if let stepId = jsonObject["stepId"] as? Int,
+                   let stepDefinition = jsonObject["stepDefinition"] as? String,
+                   let extractedInformation = jsonObject["extractedInformation"] as? [String: Any] {
+                    let submitRequestModel = SubmitRequestModel(stepId: stepId, stepDefinition: stepDefinition, extractedInformation: convertAnyDictToStringDict(dict: extractedInformation))
+                    submitRequestList.append(submitRequestModel)
+                }
+            }
+            return submitRequestList
+        }
+    } catch {
+        print("Error parsing JSON: \(error.localizedDescription)")
+    }
+    
+    return nil
+}
+
+func convertAnyDictToStringDict(dict: [String: Any]) -> [String: String] {
+    var stringDict: [String: String] = [:]
+    for (key, value) in dict {
+      if(value is NSNull ){
+        continue
+      }else{
+        if let stringValue = value as? String {
+          if(!stringValue.isEmpty){
+            stringDict[key] = stringValue
+          }
+        } else {
+          if(!"\(value)".isEmpty){
+            stringDict[key] = "\(value)"
+          }
+        }
+      }
+    }
+    return stringDict
+}
+
 
 

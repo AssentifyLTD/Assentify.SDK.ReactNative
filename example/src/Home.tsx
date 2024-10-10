@@ -4,10 +4,10 @@ import React, { useEffect } from 'react';
 import { Assentify } from 'react-native-assentify-sdk';
 
 const API_KEY =
-  'QwWzzKOYLkDzCLJ9lENlgvRQ1kmkKDv76KbJ9sPfr9Joxwj2DUuzC7htaZP89RqzgB9i9lHc4IpYOA7g';
-const tenantIdentifier = '2937c91f-c905-434b-d13d-08dcc04755ec';
+  '7UXZBSN2CeGxamNnp9CluLJn7Bb55lJo2SjXmXqiFULyM245nZXGGQvs956Fy5a5s1KoC4aMp5RXju8w';
+const tenantIdentifier = '4232e33b-1a90-4b74-94a4-08dcab07bc4d';
 const instanceHash =
-  'AA48A31C1B6852BE4C709956F540403C906950181561A490FC8CC8D45050EE7E';
+  'F0D1B6A7D863E9E4089B70EE5786D3D8DF90EE7BDD12BE315019E1F2FC0E875A';
 
 const Home = () => {
   const onStartVerification = () => {

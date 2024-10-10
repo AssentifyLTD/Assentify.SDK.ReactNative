@@ -7,6 +7,7 @@ import type {
 const JsonParserPassport = (jsonString: string): PassportExtractedModel => {
   const jsonObject = JSON.parse(jsonString ?? '');
   const outputProperties = jsonObject?.outputProperties;
+  const transformedProperties = jsonObject?.transformedProperties;
   const extractedData = jsonObject?.extractedData;
   const imageUrl = jsonObject?.imageUrl;
   const identificationDocumentCapture =
@@ -15,6 +16,7 @@ const JsonParserPassport = (jsonString: string): PassportExtractedModel => {
 
   return {
     outputProperties,
+    transformedProperties,
     extractedData,
     imageUrl,
     faces,

@@ -6,21 +6,38 @@ import AssentifySdk
 
 class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControllerDelegate
 {
+    private var imageUrl: String? = "";
     private var isDone:Bool = false;
     private var assentifySdk:AssentifySdk?;
-    private var nativeAssentifySdk:NativeAssentifySdk?;
-    private var dataFrontModel: IDExtractedModel? = nil;
-    private var _kycDocumentDetails:[KycDocumentDetails];
     private var start:Bool = false;
     var infoLabel : UILabel?;
+    var infoImage : UIImageView?;
+    var popUpMessage : UIView?;
+    private var holdHandColor: String;
+    private var processingColor: String;
+    private var language: String;
+    private var flippingCard:Bool = false;
+    private var showCountDown:Bool = true;
+    private var _kycDocumentDetails:[KycDocumentDetails];
+    private var titleID:String? = "";
+    private var nativeAssentifySdk:NativeAssentifySdk?;
+    private var outputResultProperties: [String: Any]? = [:];
 
-    init(assentifySdk: AssentifySdk,kycDocumentDetails:[KycDocumentDetails],nativeAssentifySdk:NativeAssentifySdk) {
-        self.assentifySdk = assentifySdk
-        self.nativeAssentifySdk = nativeAssentifySdk
-        self._kycDocumentDetails = kycDocumentDetails
-        super.init(nibName: nil, bundle: nil)
-    }
+    
 
+    
+    init(assentifySdk: AssentifySdk,nativeAssentifySdk:NativeAssentifySdk,holdHandColor: String,processingColor: String,kycDocumentDetails:[KycDocumentDetails],language:String,flippingCard:Bool,titleID:String,showCountDown:Bool) {
+          self.assentifySdk = assentifySdk
+          self.nativeAssentifySdk = nativeAssentifySdk
+          self.holdHandColor = holdHandColor
+          self.processingColor = processingColor
+          self._kycDocumentDetails = kycDocumentDetails
+          self.language = language
+          self.flippingCard = flippingCard
+          self.titleID = titleID
+          self.showCountDown = showCountDown
+          super.init(nibName: nil, bundle: nil)
+      }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -29,61 +46,97 @@ class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControll
         return false
     }
     override func viewDidLoad() {
-        super.viewDidLoad()
-        self.view.backgroundColor = UIColor(named: "#f5a103")
-        UIApplication.shared.isStatusBarHidden = false;
-        DispatchQueue.main.async {
-            var scanID =  self.assentifySdk?.startScanID(scanIDCardDelegate: self, kycDocumentDetails: self._kycDocumentDetails)
-            self.addChild(scanID!)
-            self.view.addSubview(scanID!.view)
-            scanID!.view.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                scanID!.view.topAnchor.constraint(equalTo: self.view.topAnchor,constant: 28),
-                scanID!.view.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-                scanID!.view.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-                scanID!.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            ])
-            scanID!.didMove(toParent: self)
-            self.infoLabel = showInfo(view: self.view, text: "Please Present Your ID", initialTextColorHex: "#f5a103")
-            showNavigationBarWithBackArrow(title: "", view: self.view, target: self, action: #selector(self.backButtonTapped))
-
+            super.viewDidLoad()
+            self.view.backgroundColor = .clear
+            UIApplication.shared.isStatusBarHidden = false;
+            DispatchQueue.main.async {
+                var scanID =  self.assentifySdk?.startScanID(scanIDCardDelegate: self, kycDocumentDetails:  self._kycDocumentDetails,language:self.language)
+                self.addChild(scanID!)
+                self.view.addSubview(scanID!.view)
+                scanID!.view.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    scanID!.view.topAnchor.constraint(equalTo: self.view.topAnchor,constant: 0),
+                    scanID!.view.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+                    scanID!.view.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+                    scanID!.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+                ])
+                scanID!.didMove(toParent: self)
+                (self.infoLabel, self.infoImage) = showInfo(view: self.view, text: "Please Present Your ID",initialTextColorHex:self.processingColor,initialBackgroundColorHex:self.holdHandColor,initialImageName:"info_icon")
+                showNavigationBarWithBackArrow(view: self.view, target: self, action: #selector(self.backButtonTapped), initialTextColorHex:self.processingColor,initialBackgroundColorHex:self.holdHandColor,title: self.titleID!)
+            }
         }
-    }
-    @objc func backButtonTapped() {
-        DispatchQueue.main.async {
-            self.dismiss(animated: false)
+        @objc func backButtonTapped() {
+         triggerEvent(eventName:"onBackClick",dataModel:nil)
+                DispatchQueue.main.async {
+                self.dismiss(animated: false)
+            }
         }
-    }
-
-    func dismissParentViewController() {
-        DispatchQueue.main.async {
-            self.dismiss(animated: false)
+        
+        func dismissParentViewController() {
+            triggerEvent(eventName:"onBackClick",dataModel:nil)
+                   DispatchQueue.main.async {
+                self.dismiss(animated: false)
+            }
+         
         }
-
-    }
-    func onError(dataModel: RemoteProcessingModel) {
-        triggerEvent(eventName:"onError",dataModel:dataModel)
-        DispatchQueue.main.async {
-            self.start = false;
+        
+        @objc func dismissPopUpMessage() {
+            DispatchQueue.main.async {
+                if(!self.start){
+                    self.popUpMessage!.removeFromSuperview();
+                    (self.infoLabel, self.infoImage) = showInfo(view: self.view, text: "Please Present Your ID",initialTextColorHex:self.processingColor,initialBackgroundColorHex:self.holdHandColor,initialImageName:"info_icon")
+                }
+            }
+         
         }
-    }
-
-    func onSend() {
-        triggerEvent(eventName:"onSend",dataModel:nil)
-        DispatchQueue.main.async {
+        
+        func onSend() {
+            triggerEvent(eventName:"onSend",dataModel:nil)
+            DispatchQueue.main.async {
+                if(self.popUpMessage != nil){
+                    self.popUpMessage!.removeFromSuperview();
+                }
                 self.start = true;
+                self.popUpMessage =  showPopUpMessage(view: self.view, title: "Transmitting", subTitle: "",initialTextColorHex:self.processingColor,initialBackgroundColorHex:self.holdHandColor, iconName: "id", isGif: true,target: self, action: #selector(self.dismissPopUpMessage))
+            }
         }
-
-    }
-
-    func onRetry(dataModel: RemoteProcessingModel) {
-        print("onRetry: \(dataModel)")
-        triggerEvent(eventName:"onRetry",dataModel:dataModel)
-        DispatchQueue.main.async {
-            self.start = false;
+        
+        func onError(dataModel: RemoteProcessingModel) {
+            triggerEvent(eventName:"onError",dataModel:dataModel)
+            DispatchQueue.main.async {
+                self.start = false;
+                self.popUpMessage!.removeFromSuperview();
+                self.popUpMessage =  showPopUpMessage(view: self.view, title: "Unable to extract", subTitle: "Let's try again",initialTextColorHex:self.processingColor,initialBackgroundColorHex:self.holdHandColor, iconName: "warning", isGif: false,target: self, action: #selector(self.dismissPopUpMessage))
+            }
         }
-    }
-
+        
+        
+        func onRetry(dataModel: RemoteProcessingModel) {
+            triggerEvent(eventName:"onRetry",dataModel:dataModel)
+            DispatchQueue.main.async {
+                self.start = false;
+                self.popUpMessage!.removeFromSuperview();
+                self.popUpMessage =  showPopUpMessage(view: self.view, title: "Unable to extract", subTitle: "Let's try again",initialTextColorHex:self.processingColor,initialBackgroundColorHex:self.holdHandColor, iconName: "warning", isGif: false,target: self, action: #selector(self.dismissPopUpMessage))
+            }
+        }
+        
+        func onLivenessUpdate(dataModel: RemoteProcessingModel) {
+            triggerEvent(eventName:"onLivenessUpdate",dataModel:dataModel)
+            DispatchQueue.main.async {
+                self.start = false;
+                self.popUpMessage!.removeFromSuperview();
+                self.popUpMessage =  showPopUpMessage(view: self.view, title: "Failed ID Check", subTitle: "Please real ID (Not copy)",initialTextColorHex:self.processingColor,initialBackgroundColorHex:self.holdHandColor, iconName: "id_warning", isGif: false,target: self, action: #selector(self.dismissPopUpMessage))
+            }
+        }
+        
+        func onWrongTemplate(dataModel:RemoteProcessingModel) {
+            triggerEvent(eventName:"onWrongTemplate",dataModel:dataModel)
+            DispatchQueue.main.async {
+                self.start = false;
+                self.popUpMessage!.removeFromSuperview();
+                self.popUpMessage =  showPopUpMessage(view: self.view, title: "Wrong Template", subTitle: "Let's try again",initialTextColorHex:self.processingColor,initialBackgroundColorHex:self.holdHandColor, iconName: "id_warning", isGif: false,target: self, action: #selector(self.dismissPopUpMessage))
+            }
+        }
     func onClipPreparationComplete(dataModel: RemoteProcessingModel) {
         triggerEvent(eventName:"onClipPreparationComplete",dataModel:dataModel)
     }
@@ -96,82 +149,58 @@ class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControll
         triggerEvent(eventName:"onUpdated",dataModel:dataModel)
     }
 
-    func onLivenessUpdate(dataModel: RemoteProcessingModel) {
-        triggerEvent(eventName:"onLivenessUpdate",dataModel:dataModel)
-    }
-
-
-    func onWrongTemplate(dataModel: RemoteProcessingModel) {
-        print("IDCard onWrongTemplate: \(String(describing: dataModel.response))")
-        triggerEvent(eventName:"onWrongTemplate",dataModel:dataModel)
-        self.isDone = true;
-        self.start = false;
-
-        DispatchQueue.main.async {
-            if let currentViewController = UIViewController.currentViewController {
-                self.dismissParentViewController()
-                currentViewController.dismiss(animated: false, completion: nil)
-            }
-        }
-    }
 
 
     func onComplete(dataModel: IDResponseModel, order: Int) {
 
-        print("onComplete" , order)
+        self.triggerCompleteEvent(eventName:"onComplete",dataModel: dataModel.iDExtractedModel)
+
+        outputResultProperties!.merge((dataModel.iDExtractedModel?.transformedProperties)!) { (_, new) in new }
+        
+        self.start = false
         DispatchQueue.main.async {
-                if(self._kycDocumentDetails.count >= 1){
-                    if(order == 1){
-                        self.triggerCompleteEvent(eventName:"onComplete",dataModel: self.dataFrontModel)
-                        var outputResultProperties = self.dataFrontModel?.outputProperties;
-                        outputResultProperties!.merge((dataModel.iDExtractedModel?.outputProperties)!) { (_, new) in new }
-
-                        if let outputProperties = try? JSONSerialization.data(withJSONObject: outputResultProperties, options: []) {
-                            UserDefaults.standard.set(outputProperties, forKey: "OutputPropertiesDoc")
-                        }
-                        if let imageUrlString =  self.dataFrontModel?.imageUrl,
-                           let imageUrl = URL(string: imageUrlString) {
-                            if let base64String = self.imageToBase64(from:imageUrl  ) {
-                                if let currentViewController = UIViewController.currentViewController {
-                                    let viewController = FaceMAtchController(assentifySdk: self.assentifySdk!,
-                                                                             nativeAssentifySdk: self.nativeAssentifySdk,
-                                                                             secondImage:base64String, delegate: self)
-                                    viewController.modalPresentationStyle = .fullScreen
-                                    currentViewController.present(viewController, animated: true, completion: nil)
-                                }
-                            }
-                        }
-                    }else{
-                        //self.dataFrontModel = dataModel.iDExtractedModel
-                        // self.triggerCompleteEvent(eventName:"onComplete",dataModel:dataModel.iDExtractedModel)
-                        self.dataFrontModel = dataModel.iDExtractedModel;
-                        self.playVideoInView(videoName: "id_card_rotation", ofType: "mp4", in: self.view, fullscreen: true)
-                        self.infoLabel?.text = "Please Present Your ID"
-                        self.start = false;
-                    }
-
-                }else{
-                    self.triggerCompleteEvent(eventName:"onComplete",dataModel:dataModel.iDExtractedModel)
-
-                    if let outputProperties = try? JSONSerialization.data(withJSONObject: dataModel.iDExtractedModel?.outputProperties, options: []) {
-                        UserDefaults.standard.set(outputProperties, forKey: "OutputPropertiesFace")
-                    }
-                    if let imageUrlString =  dataModel.iDExtractedModel?.imageUrl,
-                       let imageUrl = URL(string: imageUrlString) {
-                        if let base64String = self.imageToBase64(from:imageUrl  ) {
-                            if let currentViewController = UIViewController.currentViewController {
-                                let viewController = FaceMAtchController(assentifySdk: self.assentifySdk!,
-                                                                         nativeAssentifySdk: self.nativeAssentifySdk,
-                                                                         secondImage:base64String, delegate: self)
-                                viewController.modalPresentationStyle = .fullScreen
-                                currentViewController.present(viewController, animated: true, completion: nil)
-                            }
-                        }
-                    }
-                }
+             self.popUpMessage!.removeFromSuperview();
+             (self.infoLabel, self.infoImage) = showInfo(view: self.view, text: "Please Present Your ID",initialTextColorHex:self.processingColor,initialBackgroundColorHex:self.holdHandColor,initialImageName:"info_icon")
+       
+            if(self._kycDocumentDetails.count == 1){
+                self.imageUrl = dataModel.iDExtractedModel?.imageUrl;
             }
+            
+             if(order ==  self._kycDocumentDetails.count-1 ){
 
-
+                 if let outputProperties = try? JSONSerialization.data(withJSONObject: self.outputResultProperties, options: []) {
+                     UserDefaults.standard.set(outputProperties, forKey: "OutputPropertiesDoc")
+                 }
+                 if let imageDocUrl = URL(string: self.imageUrl!) {
+                     if let base64String = self.imageToBase64(from: imageDocUrl) {
+                         if let currentViewController = UIViewController.currentViewController {
+                             let viewController = FaceMAtchController(assentifySdk: self.assentifySdk!,
+                                                                      nativeAssentifySdk: self.nativeAssentifySdk,
+                                                                      holdHandColor: self.holdHandColor,
+                                                                      processingColor: self.processingColor,
+                                                                      secondImage:base64String,showCountDown: self.showCountDown,delegate: self)
+                             viewController.modalPresentationStyle = .fullScreen
+                             currentViewController.present(viewController, animated: true, completion: nil)
+                         }
+                     }
+                 }
+                 
+    
+                 
+             }else{
+                 if(self.flippingCard){
+                     let  flippingCardUI =  showFlippingCard(view: self.view);
+                     DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                         flippingCardUI.removeFromSuperview();
+                     }
+                 }
+                 if(order == 0){
+                     self.imageUrl = dataModel.iDExtractedModel?.imageUrl;
+                 }
+               
+             }
+         }
+        
     }
 
     func onCardDetected(dataModel: RemoteProcessingModel) {
@@ -220,40 +249,45 @@ class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControll
     }
 
     func onEnvironmentalConditionsChange(brightness: Double, motion: MotionType, zoom: ZoomType) {
-        DispatchQueue.main.async {
-            if(self.start){
-                self.infoLabel?.text = "Processing... "
-                self.infoLabel?.textColor = UIColor(named: "#f5a103")
-            }else{
-                self.infoLabel?.textColor = UIColor(named: "#f5a103")
-                if (zoom != ZoomType.SENDING) {
-                    if (zoom == ZoomType.ZOOM_IN) {
-                        self.start = false;
-                        self.infoLabel?.text = "Please Move The ID\nCloser To The Camera"
-                    }
-                    if (zoom == ZoomType.ZOOM_OUT) {
-                        self.start = false;
-                        self.infoLabel?.text = "Please Move The ID\nAway From The Camera"
-                    }
-                } else if (motion == MotionType.HOLD_YOUR_HAND) {
-                    self.start = false;
-                    self.infoLabel?.text = "Please Hold Your Hand"
-                } else {
-                    self.infoLabel?.text = "Please Present Your ID"
-                }
+            DispatchQueue.main.async {
+                       if(self.start == false){
+                           if (zoom != ZoomType.SENDING && zoom != ZoomType.NO_DETECT) {
+                               if (zoom == ZoomType.ZOOM_IN) {
+                                         self.start = false;
+                                         self.infoLabel?.text = "Move ID Closer"
+                                        self.infoImage!.image = UIImage(named: "zoom_in")
+                                     }
+                               if (zoom == ZoomType.ZOOM_OUT) {
+                                   self.start = false;
+                                   self.infoLabel?.text = "Move ID Further"
+                                   self.infoImage!.image = UIImage(named: "zoom_out")
+                                     }
+                                 } else if (motion == MotionType.HOLD_YOUR_HAND) {
+                                     self.start = false;
+                                     self.infoLabel?.text = "Please Hold Your Hand"
+                                     self.infoImage!.image = UIImage(named: "info_icon")
+                                 } else {
+                                     if (motion == MotionType.SENDING && zoom == ZoomType.SENDING){
+                                         self.start = false;
+                                         self.infoLabel?.text = "Hold Steady"
+                                         self.infoImage!.image = UIImage(named: "info_icon")
+                                     }
+                                     if (motion == MotionType.NO_DETECT && zoom == ZoomType.NO_DETECT){
+                                         self.start = false;
+                                         self.infoLabel?.text = "Please Present Your ID"
+                                         self.infoImage!.image = UIImage(named: "info_icon")
+                                     }
+
+                                 }
+                             }else {
+                                 self.infoLabel?.removeFromSuperview()
+                                 self.infoImage?.removeFromSuperview()
+                             }
+                
             }
-            let eventResultMap: [String: Any] = [
-                "start": self.start,
-                "zoomType": zoom,
-                "motion": motion,
-                "brightness": brightness
-            ]
-            let result: [String: Any] =  ["IdDataModel": eventResultMap]
-            self.nativeAssentifySdk?.sendEvent(withName: "onEnvironmentalConditionsChange", body: result)
+            
         }
-
-    }
-
+        
     func triggerCompleteEvent(eventName:String, dataModel: IDExtractedModel?){
         var eventResultMap: [String: Any] = [:]
         if(dataModel != nil){
@@ -341,6 +375,5 @@ class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControll
 
 
 }
-
 
 

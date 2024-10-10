@@ -3,6 +3,6 @@
   <color name="transparent">#00000000</color>
   <color name="white">#FFF</color>
   <color name="yellow">#f5a103</color>
-  <color name="Green">#f5a103</color>
-
+  <color name="Green">#61A03A</color>
+  <color name="Red">#FF0000</color>
 </resources>

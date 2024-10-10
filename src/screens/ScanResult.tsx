@@ -36,9 +36,7 @@ const ScanResult: React.FC<Props> = () => {
     isSubmittedData,
     isSubmittedSuccess,
   } = useGlobalStore();
-  console.log('scannedData: ', scannedData);
-  console.log('faceMatchData: ', faceMatchData);
-  console.log('idScannedData: ', idScannedData);
+
 
   useBackHandler(() => {
     console.log('HowToCapture backAction');
