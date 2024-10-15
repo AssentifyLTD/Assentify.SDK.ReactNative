@@ -3307,6 +3307,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash@npm:^4.17.10":
+  version: 4.17.10
+  resolution: "@types/lodash@npm:4.17.10"
+  checksum: 4600f2f25270c8fee6953e363d318149a5f0f1b1bb820aa2f42d7ada6e4f7de31848bb5ffc2c687b40bd73aa982167bdd6e6d8d456e72abe0c660ec77d1fa7e9
+  languageName: node
+  linkType: hard
+
 "@types/minimist@npm:^1.2.0, @types/minimist@npm:^1.2.2":
   version: 1.2.5
   resolution: "@types/minimist@npm:1.2.5"
@@ -11242,6 +11249,7 @@ __metadata:
     "@react-navigation/native-stack": ^6.9.26
     "@release-it/conventional-changelog": ^5.0.0
     "@types/jest": ^29.5.5
+    "@types/lodash": ^4.17.10
     "@types/react": ^18.2.44
     del-cli: ^5.1.0
     eslint: ^8.51.0
@@ -13231,7 +13239,7 @@ __metadata:
 
 "typescript@patch:typescript@^5.2.0#~builtin<compat/typescript>":
   version: 5.6.2
-  resolution: "typescript@patch:typescript@npm%3A5.6.2#~builtin<compat/typescript>::version=5.6.2&hash=14eedb"
+  resolution: "typescript@patch:typescript@npm%3A5.6.2#~builtin<compat/typescript>::version=5.6.2&hash=29ae49"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver

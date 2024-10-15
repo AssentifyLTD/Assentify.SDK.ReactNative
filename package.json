@@ -1,6 +1,6 @@
 {
   "name": "react-native-assentify-sdk",
-  "version": "0.0.16",
+  "version": "0.0.18",
   "description": "React Native module that allows you to use the native Assentify SDK",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -62,6 +62,7 @@
     "@react-navigation/native-stack": "^6.9.26",
     "@release-it/conventional-changelog": "^5.0.0",
     "@types/jest": "^29.5.5",
+    "@types/lodash": "^4.17.10",
     "@types/react": "^18.2.44",
     "del-cli": "^5.1.0",
     "eslint": "^8.51.0",
