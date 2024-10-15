@@ -7,6 +7,7 @@ import AssentifySdk
 class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControllerDelegate
 {
     private var imageUrl: String? = "";
+    private var apiKey: String? = "";
     private var isDone:Bool = false;
     private var assentifySdk:AssentifySdk?;
     private var start:Bool = false;
@@ -26,7 +27,7 @@ class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControll
     
 
     
-    init(assentifySdk: AssentifySdk,nativeAssentifySdk:NativeAssentifySdk,holdHandColor: String,processingColor: String,kycDocumentDetails:[KycDocumentDetails],language:String,flippingCard:Bool,titleID:String,showCountDown:Bool) {
+    init(assentifySdk: AssentifySdk,nativeAssentifySdk:NativeAssentifySdk,holdHandColor: String,processingColor: String,kycDocumentDetails:[KycDocumentDetails],language:String,flippingCard:Bool,titleID:String,showCountDown:Bool,apiKey:String) {
           self.assentifySdk = assentifySdk
           self.nativeAssentifySdk = nativeAssentifySdk
           self.holdHandColor = holdHandColor
@@ -36,6 +37,7 @@ class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControll
           self.flippingCard = flippingCard
           self.titleID = titleID
           self.showCountDown = showCountDown
+          self.apiKey = apiKey
           super.init(nibName: nil, bundle: nil)
       }
     required init?(coder: NSCoder) {
@@ -172,16 +174,17 @@ class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControll
                      UserDefaults.standard.set(outputProperties, forKey: "OutputPropertiesDoc")
                  }
                  if let imageDocUrl = URL(string: self.imageUrl!) {
-                     if let base64String = self.imageToBase64(from: imageDocUrl) {
-                         if let currentViewController = UIViewController.currentViewController {
-                             let viewController = FaceMAtchController(assentifySdk: self.assentifySdk!,
-                                                                      nativeAssentifySdk: self.nativeAssentifySdk,
-                                                                      holdHandColor: self.holdHandColor,
-                                                                      processingColor: self.processingColor,
-                                                                      secondImage:base64String,showCountDown: self.showCountDown,delegate: self)
-                             viewController.modalPresentationStyle = .fullScreen
-                             currentViewController.present(viewController, animated: true, completion: nil)
-                         }
+                     self.imageToBase64(from: imageDocUrl) { base64String in
+                         DispatchQueue.main.async {
+                             if let currentViewController = UIViewController.currentViewController {
+                                 let viewController = FaceMAtchController(assentifySdk: self.assentifySdk!,
+                                                                          nativeAssentifySdk: self.nativeAssentifySdk,
+                                                                          holdHandColor: self.holdHandColor,
+                                                                          processingColor: self.processingColor,
+                                                                          secondImage:base64String!,showCountDown: self.showCountDown,delegate: self)
+                                 viewController.modalPresentationStyle = .fullScreen
+                                 currentViewController.present(viewController, animated: true, completion: nil)
+                             }}
                      }
                  }
                  
@@ -312,17 +315,30 @@ class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControll
 
     }
 
-    func imageToBase64(from url: URL) -> String? {
-        guard let imageData = try? Data(contentsOf: url) else {
-            print("Failed to download image from URL")
-            return nil
-        }
-
-        // Convert image data to base64
-        let base64String = imageData.base64EncodedString()
-
-        return base64String
-    }
+    func imageToBase64(from url: URL, completion: @escaping (String?) -> Void) {
+          
+          var request = URLRequest(url: url)
+          
+          let headers = ["X-Api-Key": self.apiKey]
+          
+          for (headerField, headerValue) in headers {
+              request.setValue(headerValue, forHTTPHeaderField: headerField)
+          }
+          
+          let task = URLSession.shared.dataTask(with: request) { data, response, error in
+              guard let imageData = data, error == nil else {
+                  print("Failed to download image from URL: \(error?.localizedDescription ?? "Unknown error")")
+                  completion(nil)
+                  return
+              }
+              
+              let base64String = imageData.base64EncodedString()
+              
+              completion(base64String)
+          }
+          
+          task.resume()
+      }
 
 
 
