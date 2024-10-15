@@ -14,6 +14,7 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
     private var holdHandColor: String?;
     private var processingColor: String?;
     private var templatesByCountry: [TemplatesByCountry]?;
+    private var apiKey:String?;
 
 
     @objc
@@ -42,6 +43,8 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
             print("apiKey, tenantIdentifier, instanceHash a are mandatory parameters")
             return
         }
+        
+        self.apiKey = apiKey
 
         print("apiKey: \(apiKey)")
         print("tenantIdentifier: \(tenantIdentifier)")
@@ -170,7 +173,7 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
 
             self.timeStarted =  self.getTimeUTC();
             if let currentViewController = UIViewController.currentViewController {
-                let viewController = PassportController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self,holdHandColor:self.holdHandColor!,processingColor: self.processingColor!,language: language,showCountDown: showCountDown)
+                let viewController = PassportController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self,holdHandColor:self.holdHandColor!,processingColor: self.processingColor!,language: language,showCountDown: showCountDown,apiKey:  self.apiKey!)
                 viewController.modalPresentationStyle = .fullScreen
                 currentViewController.present(viewController, animated: true, completion: nil)
             }
@@ -183,7 +186,7 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
         DispatchQueue.main.async {
             self.timeStarted =  self.getTimeUTC();
             if let currentViewController = UIViewController.currentViewController {
-                let viewController = OtherController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self,holdHandColor:self.holdHandColor!,processingColor: self.processingColor!,language: language,showCountDown: showCountDown)
+                let viewController = OtherController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self,holdHandColor:self.holdHandColor!,processingColor: self.processingColor!,language: language,showCountDown: showCountDown,apiKey:   self.apiKey!)
                 viewController.modalPresentationStyle = .fullScreen
                 currentViewController.present(viewController, animated: true, completion: nil)
             }
@@ -200,7 +203,7 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
         DispatchQueue.main.async {
             self.timeStarted =  self.getTimeUTC();
             if let currentViewController = UIApplication.shared.keyWindow?.rootViewController {
-                let viewController = IDCardController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self,holdHandColor: self.holdHandColor!,processingColor: self.processingColor!,kycDocumentDetails: kycDocumentDetails,language:language,flippingCard: flippingCard,titleID:self.getIdTitle(kycDocumentDetails:kycDocumentDetails ), showCountDown: showCountDown)
+                let viewController = IDCardController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self,holdHandColor: self.holdHandColor!,processingColor: self.processingColor!,kycDocumentDetails: kycDocumentDetails,language:language,flippingCard: flippingCard,titleID:self.getIdTitle(kycDocumentDetails:kycDocumentDetails ), showCountDown: showCountDown,apiKey:   self.apiKey!)
                               viewController.modalPresentationStyle = .fullScreen
                               currentViewController.present(viewController, animated: true, completion: nil)
                           }

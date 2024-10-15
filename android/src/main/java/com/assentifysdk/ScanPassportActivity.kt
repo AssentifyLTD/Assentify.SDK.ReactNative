@@ -55,7 +55,7 @@ class ScanPassportActivity : AppCompatActivity(),
   private  var showCountDown: Boolean = true;
   private var start: Boolean = false;
   private var isDone: Boolean = false;
-
+  private  var apiKey: String = "";
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -64,6 +64,7 @@ class ScanPassportActivity : AppCompatActivity(),
     holdHandColor = intent.getStringExtra("holdHandColor")!!
     processingColor = intent.getStringExtra("processingColor")!!
     language = intent.getStringExtra("language")!!
+    apiKey = intent.getStringExtra("apiKey")!!
     showCountDown = intent.getBooleanExtra("showCountDown",true)
 
     startAssentifySdk()
@@ -256,7 +257,7 @@ class ScanPassportActivity : AppCompatActivity(),
           if(!isDone){
             isDone = true;
             var base64Image =
-              ImageToBase64Converter().execute(dataModel.passportExtractedModel!!.imageUrl).get()
+              ImageToBase64Converter(apiKey).execute(dataModel.passportExtractedModel!!.imageUrl).get()
             val sharedPreferences =
               reactApplicationContext.getSharedPreferences("FaceMatch", Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
