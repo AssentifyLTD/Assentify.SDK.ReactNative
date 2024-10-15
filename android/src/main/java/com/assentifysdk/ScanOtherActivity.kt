@@ -56,7 +56,7 @@ class ScanOtherActivity: AppCompatActivity(),
   private lateinit var popUpButton: Button
   private var start: Boolean = false;
   private  var showCountDown: Boolean = true;
-
+  private  var apiKey: String = "";
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_scan)
@@ -64,6 +64,7 @@ class ScanOtherActivity: AppCompatActivity(),
     holdHandColor = intent.getStringExtra("holdHandColor")!!
     processingColor = intent.getStringExtra("processingColor")!!
     language = intent.getStringExtra("language")!!
+    apiKey = intent.getStringExtra("apiKey")!!
     showCountDown = intent.getBooleanExtra("showCountDown",true)
     startAssentifySdk()
 
@@ -234,7 +235,7 @@ class ScanOtherActivity: AppCompatActivity(),
         }
       }
       /** End **/
-      var base64Image = ImageToBase64Converter().execute(dataModel.otherExtractedModel!!.imageUrl).get()
+      var base64Image = ImageToBase64Converter(apiKey).execute(dataModel.otherExtractedModel!!.imageUrl).get()
     val sharedPreferences =
       reactApplicationContext.getSharedPreferences("FaceMatch", Context.MODE_PRIVATE)
     val editor = sharedPreferences.edit()

@@ -60,6 +60,7 @@ class ScanIDActivity: AppCompatActivity(),
   private var start: Boolean = false;
   private var frontModel: IDResponseModel? = null
   private  var showCountDown: Boolean = true;
+  private  var apiKey: String = "";
   val values: MutableMap<String, String> = mutableMapOf()
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,6 +79,7 @@ class ScanIDActivity: AppCompatActivity(),
     title = intent.getStringExtra("title")!!
     isFlippingCard = intent.getBooleanExtra("flippingCard",false)!!
     showCountDown = intent.getBooleanExtra("showCountDown",true)
+    apiKey = intent.getStringExtra("apiKey")!!
     startAssentifySdk()
 
 
@@ -281,7 +283,7 @@ class ScanIDActivity: AppCompatActivity(),
             }
           }
           /** **/
-          var base64Image = ImageToBase64Converter().execute(frontModel!!.iDExtractedModel!!.imageUrl).get()
+          var base64Image = ImageToBase64Converter(apiKey).execute(frontModel!!.iDExtractedModel!!.imageUrl).get()
           val sharedPreferences = reactApplicationContext.getSharedPreferences("FaceMatch", Context.MODE_PRIVATE)
           val editor = sharedPreferences.edit()
           editor.putString("Base64SecondImage", base64Image)
@@ -346,7 +348,7 @@ class ScanIDActivity: AppCompatActivity(),
           }
         }
         /** **/
-        var base64Image = ImageToBase64Converter().execute(dataModel.iDExtractedModel!!.imageUrl).get()
+        var base64Image = ImageToBase64Converter(apiKey).execute(dataModel.iDExtractedModel!!.imageUrl).get()
         val sharedPreferences = reactApplicationContext.getSharedPreferences("FaceMatch", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString("Base64SecondImage", base64Image)

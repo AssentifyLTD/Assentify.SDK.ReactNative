@@ -37,6 +37,7 @@ class AssentifySdkModule(context: ReactApplicationContext) :
 
   private lateinit var assentifySdk: AssentifySdk
   private lateinit var timeStarted: String
+  private lateinit var apiKey: String
   private lateinit var configModel: ConfigModel
   private val mainHandler = Handler(Looper.getMainLooper())
   private lateinit var environmentalConditions: EnvironmentalConditions
@@ -70,6 +71,7 @@ class AssentifySdkModule(context: ReactApplicationContext) :
         return
       }
 
+      this.apiKey = apiKey
       println("initialize - Assentify SDK initialize")
       println("apiKey: $apiKey")
       println("tenantIdentifier: $tenantIdentifier")
@@ -140,6 +142,7 @@ class AssentifySdkModule(context: ReactApplicationContext) :
       intent.putExtra("processingColor", environmentalConditions.CustomColor)
       intent.putExtra("language", language)
       intent.putExtra("showCountDown", showCountDown)
+      intent.putExtra("apiKey", this.apiKey)
       reactApplicationContext?.startActivity(intent)
     }
   }
@@ -154,6 +157,7 @@ class AssentifySdkModule(context: ReactApplicationContext) :
     intent.putExtra("processingColor", environmentalConditions.CustomColor)
     intent.putExtra("language", language)
     intent.putExtra("showCountDown", showCountDown)
+    intent.putExtra("apiKey", this.apiKey)
     currentActivity?.startActivity(intent)
   }
 
@@ -171,6 +175,7 @@ class AssentifySdkModule(context: ReactApplicationContext) :
       intent.putExtra("flippingCard", flippingCard)
       intent.putExtra("title", getIdTitle(jsonStringKycDocumentDetails!!))
       intent.putExtra("showCountDown", showCountDown)
+      intent.putExtra("apiKey", this.apiKey)
       currentActivity?.startActivity(intent)
     } catch (e: Exception) {
       Log.e(NAME, e.toString())
