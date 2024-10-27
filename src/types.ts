@@ -147,6 +147,7 @@ export type Templates = {
 };
 
 export type TemplatesByCountry = {
+  id: number;
   name: string;
   sourceCountryCode: string;
   flag: string;
