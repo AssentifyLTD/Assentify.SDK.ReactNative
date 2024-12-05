@@ -38,6 +38,6 @@ Pod::Spec.new do |s|
 
 
   s.dependency "React-Core"
-  s.dependency "AssentifySdk", '0.0.36'
+  s.dependency "AssentifySdk", '0.0.40'
 
 end
