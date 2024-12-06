@@ -1,6 +1,6 @@
 {
   "name": "react-native-assentify-sdk",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "React Native module that allows you to use the native Assentify SDK",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
