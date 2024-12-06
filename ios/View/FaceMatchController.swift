@@ -59,9 +59,6 @@ class FaceMAtchController: UIViewController ,FaceMatchDelegate
               faceMatch!.didMove(toParent: self)
               (self.infoLabel, self.infoImage) = showInfo(view: self.view, text: "Please face within circle",initialTextColorHex:self.processingColor,initialBackgroundColorHex:self.holdHandColor,initialImageName:"info_icon")
               showNavigationBarWithBackArrow(view: self.view, target: self, action: #selector(self.backButtonTapped), initialTextColorHex:self.processingColor,initialBackgroundColorHex:self.holdHandColor,title: "Face Capture")
-              faceMatch?.startScanning();
-           
-
           }
       }
       @objc func backButtonTapped() {

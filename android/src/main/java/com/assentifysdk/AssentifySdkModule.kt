@@ -49,7 +49,8 @@ class AssentifySdkModule(context: ReactApplicationContext) :
       instanceHash: String,
       processMrz: Boolean? = null,
       storeCapturedDocument: Boolean? = null,
-      performLivenessDetection: Boolean? = null,
+      performLivenessDocument: Boolean? = null,
+      performLivenessFace: Boolean? = null,
       storeImageStream: Boolean? = null,
       saveCapturedVideoID: Boolean? = null,
       saveCapturedVideoFace: Boolean? = null,
@@ -77,7 +78,8 @@ class AssentifySdkModule(context: ReactApplicationContext) :
       println("tenantIdentifier: $tenantIdentifier")
       println("processMrz: ${processMrz.toString()}")
       println("storeCapturedDocument: ${storeCapturedDocument.toString()}")
-      println("performLivenessDetection: ${performLivenessDetection.toString()}")
+      println("performLivenessDocument: ${performLivenessDocument.toString()}")
+      println("performLivenessFace: ${performLivenessFace.toString()}")
       println("storeImageStream: ${storeImageStream.toString()}")
       println("saveCapturedVideoID: ${saveCapturedVideoID.toString()}")
       println("ENV_BRIGHTNESS_HIGH_THRESHOLD: ${ENV_BRIGHTNESS_HIGH_THRESHOLD.toString()}")
@@ -121,7 +123,8 @@ class AssentifySdkModule(context: ReactApplicationContext) :
               this,
               processMrz,
               storeCapturedDocument,
-              performLivenessDetection,
+              performLivenessDocument,
+              performLivenessFace,
               storeImageStream,
               saveCapturedVideoID,
               saveCapturedVideoFace

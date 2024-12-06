@@ -8,7 +8,8 @@ RCT_EXTERN_METHOD(initialize: (NSString *)apiKey
                   instanceHash:(NSString *)interaction
                   processMrz:(BOOL *)processMrz
                   storeCapturedDocument:(BOOL *)storeCapturedDocument
-                  performLivenessDetection:(BOOL *)performLivenessDetection
+                  performLivenessDocument:(BOOL *)performLivenessDocument
+                  performLivenessFace:(BOOL *)performLivenessFace
                   storeImageStream:(BOOL *)storeImageStream
                   saveCapturedVideoID:(BOOL *)saveCapturedVideoID
                   saveCapturedVideoFace:(BOOL *)saveCapturedVideoFace

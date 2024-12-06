@@ -24,7 +24,8 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
                           instanceHash: String,
                           processMrz: Bool = true,
                           storeCapturedDocument: Bool = true,
-                          performLivenessDetection: Bool = false,
+                          performLivenessDocument: Bool = false,
+                          performLivenessFace: Bool = false,
                           storeImageStream: Bool = true,
                           saveCapturedVideoID: Bool = true,
                           saveCapturedVideoFace: Bool = true,
@@ -51,7 +52,8 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
         print("instanceHash: \(instanceHash)")
         print("processMrz: \(Bool(processMrz))")
         print("storeCapturedDocument: \(Bool(storeCapturedDocument))")
-        print("performLivenessDetection: \(Bool(performLivenessDetection))")
+        print("performLivenessDocument: \(Bool(performLivenessDocument))")
+        print("performLivenessFace: \(Bool(performLivenessFace))")
         print("storeImageStream: \(Bool(storeImageStream))")
         print("saveCapturedVideoID: \(Bool(saveCapturedVideoID))")
         print("saveCapturedVideoFace: \(Bool(saveCapturedVideoFace))")
@@ -97,7 +99,8 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
             assentifySdkDelegate: self,
             processMrz: processMrz,
             storeCapturedDocument: storeCapturedDocument,
-            performLivenessDetection: performLivenessDetection,
+            performLivenessDocument: performLivenessDocument,
+            performLivenessFace: performLivenessFace,
             storeImageStream: storeImageStream,
             saveCapturedVideoID: saveCapturedVideoID,
             saveCapturedVideoFace: saveCapturedVideoFace

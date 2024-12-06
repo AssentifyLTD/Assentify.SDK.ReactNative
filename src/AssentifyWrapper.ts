@@ -25,7 +25,8 @@ const AssentifyWrapper = {
     instanceHash: string,
     processMrz?: boolean,
     storeCapturedDocument?: boolean,
-    performLivenessDetection?: boolean,
+    performLivenessDocument?: boolean,
+    performLivenessFace?: boolean,
     storeImageStream?: boolean,
     saveCapturedVideoID?: boolean,
     saveCapturedVideoFace?: boolean,
@@ -53,7 +54,8 @@ const AssentifyWrapper = {
             instanceHash,
             processMrz ?? true,
             storeCapturedDocument ?? true,
-            performLivenessDetection ?? false,
+            performLivenessDocument ?? false,
+            performLivenessFace ?? false,
             storeImageStream ?? true,
             saveCapturedVideoID ?? true,
             saveCapturedVideoFace ?? true,
@@ -64,7 +66,7 @@ const AssentifyWrapper = {
             ENV_CustomColor ?? '#ffffff',
             ENV_HoldHandColor ?? '#f5a103',
             enableDetect ?? true,
-            enableGuide ?? true,
+            enableGuide ?? true
           );
         } else if (result === RESULTS.UNAVAILABLE) {
           Alert.alert(

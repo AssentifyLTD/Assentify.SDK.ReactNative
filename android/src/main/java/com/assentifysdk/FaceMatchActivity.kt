@@ -175,7 +175,6 @@ private lateinit var assentifySdk: AssentifySdk
     var transaction = fragmentManager.beginTransaction()
     transaction.replace(R.id.fragmentContainer, faceMatch)
     transaction.commit()
-    faceMatch.startScanning()
   }
 
   override fun onError(dataModel: BaseResponseDataModel) {
