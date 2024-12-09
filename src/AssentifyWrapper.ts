@@ -68,7 +68,11 @@ const AssentifyWrapper = {
             enableDetect ?? true,
             enableGuide ?? true
           );
-        } else if (result === RESULTS.UNAVAILABLE) {
+        } else if (
+          result === RESULTS.UNAVAILABLE ||
+          result === RESULTS.DENIED ||
+          result === RESULTS.BLOCKED
+        ) {
           Alert.alert(
             'Warning!',
             'Please allow your camera permission in order to proceed further',
