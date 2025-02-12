@@ -30,10 +30,10 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 import com.assentify.sdk.RemoteClient.Models.KycDocumentDetails
-
+import ImageToBase64Converter
 
 class AssentifySdkModule(context: ReactApplicationContext) :
-    AssentifySdkBaseModule(context), AssentifySdkCallback, SubmitDataCallback {
+  AssentifySdkBaseModule(context), AssentifySdkCallback, SubmitDataCallback {
 
   private lateinit var assentifySdk: AssentifySdk
   private lateinit var timeStarted: String
@@ -42,31 +42,27 @@ class AssentifySdkModule(context: ReactApplicationContext) :
   private val mainHandler = Handler(Looper.getMainLooper())
   private lateinit var environmentalConditions: EnvironmentalConditions
   private lateinit var templatesByCountry: List<TemplatesByCountry>
+
   @ReactMethod
   fun initialize(
-      apiKey: String,
-      tenantIdentifier: String,
-      instanceHash: String,
-      processMrz: Boolean? = null,
-      storeCapturedDocument: Boolean? = null,
-      performLivenessDocument: Boolean? = null,
-      performLivenessFace: Boolean? = null,
-      storeImageStream: Boolean? = null,
-      saveCapturedVideoID: Boolean? = null,
-      saveCapturedVideoFace: Boolean? = null,
-      ENV_BRIGHTNESS_HIGH_THRESHOLD: Float? = null,
-      ENV_BRIGHTNESS_LOW_THRESHOLD: Float? = null,
-      ENV_PREDICTION_LOW_PERCENTAGE: Float? = null,
-      ENV_PREDICTION_HIGH_PERCENTAGE: Float? = null,
-      ENV_CustomColor: String? = null,
-      ENV_HoldHandColor: String? = null,
-      enableDetect: Boolean = true,
-      enableGuide: Boolean = true,
+    apiKey: String,
+    tenantIdentifier: String,
+    instanceHash: String,
+    processMrz: Boolean? = null,
+    storeCapturedDocument: Boolean? = null,
+    performLivenessDocument: Boolean? = null,
+    performLivenessFace: Boolean? = null,
+    storeImageStream: Boolean? = null,
+    saveCapturedVideoID: Boolean? = null,
+    saveCapturedVideoFace: Boolean? = null,
+    ENV_CustomColor: String? = null,
+    enableDetect: Boolean = true,
+    enableGuide: Boolean = true,
   ) {
     try {
       if (apiKey.isNullOrBlank() ||
-              tenantIdentifier.isNullOrBlank() ||
-              instanceHash.isNullOrBlank()
+        tenantIdentifier.isNullOrBlank() ||
+        instanceHash.isNullOrBlank()
       ) {
         Log.e(NAME, "apiKey, tenantIdentifier and instanceHash are mandatory parameters")
         return
@@ -82,26 +78,21 @@ class AssentifySdkModule(context: ReactApplicationContext) :
       println("performLivenessFace: ${performLivenessFace.toString()}")
       println("storeImageStream: ${storeImageStream.toString()}")
       println("saveCapturedVideoID: ${saveCapturedVideoID.toString()}")
-      println("ENV_BRIGHTNESS_HIGH_THRESHOLD: ${ENV_BRIGHTNESS_HIGH_THRESHOLD.toString()}")
-      println("ENV_BRIGHTNESS_LOW_THRESHOLD: ${ENV_BRIGHTNESS_LOW_THRESHOLD.toString()}")
-      println("ENV_PREDICTION_LOW_PERCENTAGE: ${ENV_PREDICTION_LOW_PERCENTAGE.toString()}")
-      println("ENV_PREDICTION_HIGH_PERCENTAGE: ${ENV_PREDICTION_HIGH_PERCENTAGE.toString()}")
       println("ENV_CustomColor: $ENV_CustomColor")
-      println("ENV_HoldHandColor: $ENV_HoldHandColor")
       println("enableDetect: $enableDetect")
       println("enableGuide: $enableGuide")
 
-       environmentalConditions =
-          EnvironmentalConditions(
-            enableDetect,
-            enableGuide,
-            ENV_BRIGHTNESS_HIGH_THRESHOLD ?: 500.0f,
-            ENV_BRIGHTNESS_LOW_THRESHOLD ?: 00.0f,
-            ENV_PREDICTION_LOW_PERCENTAGE ?: 50.0f,
-            ENV_PREDICTION_HIGH_PERCENTAGE ?: 100.0f,
-            ENV_CustomColor ?: "#f5a103",
-            ENV_HoldHandColor ?: "#f5a103",
-          )
+      environmentalConditions =
+        EnvironmentalConditions(
+          enableDetect,
+          enableGuide,
+          500.0f,
+          00.0f,
+          50.0f,
+          100.0f,
+         "#ffffff",
+          ENV_CustomColor ?: "#f5a103",
+        )
 
       val eventResultMap = Arguments.createMap().apply {
         putBoolean("assentifySdkInitStart", true)
@@ -109,33 +100,33 @@ class AssentifySdkModule(context: ReactApplicationContext) :
       sendEvent("AppResult", eventResultMap)
 
       val sharedPreferences =
-          reactApplicationContext.getSharedPreferences("BlockLoaders", Context.MODE_PRIVATE)
+        reactApplicationContext.getSharedPreferences("BlockLoaders", Context.MODE_PRIVATE)
       val editor = sharedPreferences.edit()
       editor.putString("instanceHash", instanceHash)
       editor.apply()
 
       assentifySdk =
-          AssentifySdk(
-              apiKey,
-              tenantIdentifier,
-              instanceHash,
-              environmentalConditions,
-              this,
-              processMrz,
-              storeCapturedDocument,
-              performLivenessDocument,
-              performLivenessFace,
-              storeImageStream,
-              saveCapturedVideoID,
-              saveCapturedVideoFace
-          )
+        AssentifySdk(
+          apiKey,
+          tenantIdentifier,
+          instanceHash,
+          environmentalConditions,
+          this,
+          processMrz,
+          storeCapturedDocument,
+          performLivenessDocument,
+          performLivenessFace,
+          storeImageStream,
+          saveCapturedVideoID,
+          saveCapturedVideoFace
+        )
     } catch (e: Exception) {
       Log.e(NAME, e.toString())
     }
   }
 
   @ReactMethod
-  fun startScanPassport(language: String,showCountDown:Boolean) {
+  fun startScanPassport(language: String) {
     timeStarted = getCurrentDateTimeUTC();
     /** Nav To Passport Scan Page */
     val intent = Intent(reactApplicationContext, ScanPassportActivity::class.java)
@@ -144,14 +135,14 @@ class AssentifySdkModule(context: ReactApplicationContext) :
       intent.putExtra("holdHandColor", environmentalConditions.HoldHandColor)
       intent.putExtra("processingColor", environmentalConditions.CustomColor)
       intent.putExtra("language", language)
-      intent.putExtra("showCountDown", showCountDown)
+      intent.putExtra("showCountDown", true)
       intent.putExtra("apiKey", this.apiKey)
       reactApplicationContext?.startActivity(intent)
     }
   }
 
   @ReactMethod
-  fun startScanOtherIDPage(language: String,showCountDown:Boolean) {
+  fun startScanOtherIDPage(language: String) {
     timeStarted = getCurrentDateTimeUTC();
     /** Nav To Other Scan Page */
     val intent = Intent(currentActivity, ScanOtherActivity::class.java)
@@ -159,13 +150,17 @@ class AssentifySdkModule(context: ReactApplicationContext) :
     intent.putExtra("holdHandColor", environmentalConditions.HoldHandColor)
     intent.putExtra("processingColor", environmentalConditions.CustomColor)
     intent.putExtra("language", language)
-    intent.putExtra("showCountDown", showCountDown)
+    intent.putExtra("showCountDown", true)
     intent.putExtra("apiKey", this.apiKey)
     currentActivity?.startActivity(intent)
   }
 
   @ReactMethod
-  fun startScanIDPage(jsonStringKycDocumentDetails: String,language: String,flippingCard:Boolean,showCountDown:Boolean) {
+  fun startScanIDPage(
+    jsonStringKycDocumentDetails: String,
+    language: String,
+    flippingCard: Boolean,
+  ) {
     timeStarted = getCurrentDateTimeUTC();
     try {
       /** Nav To ID Scan Page */
@@ -177,7 +172,7 @@ class AssentifySdkModule(context: ReactApplicationContext) :
       intent.putExtra("language", language)
       intent.putExtra("flippingCard", flippingCard)
       intent.putExtra("title", getIdTitle(jsonStringKycDocumentDetails!!))
-      intent.putExtra("showCountDown", showCountDown)
+      intent.putExtra("showCountDown", true)
       intent.putExtra("apiKey", this.apiKey)
       currentActivity?.startActivity(intent)
     } catch (e: Exception) {
@@ -185,38 +180,44 @@ class AssentifySdkModule(context: ReactApplicationContext) :
     }
   }
 
-  //  @ReactMethod
-  //  fun navigateToFaceMatch() {
-  //    /**  Nav To Face Match Page **/
-  //    val sharedPreferences = reactApplicationContext.getSharedPreferences("FaceMatch",
-  // Context.MODE_PRIVATE)
-  //    val editor = sharedPreferences.edit()
-  //    editor.putString("Base64SecondImage", "+ozSHAAADAFBMVEX///...etc")
-  //    editor.apply()
-  //    val intent = Intent(currentActivity, FaceMatchActivity::class.java)
-  //    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-  //    currentActivity?.startActivity(intent)
-  //  }
+  @ReactMethod
+  fun startFaceMatch(imageUrl:String,showCountDown: Boolean) {
+    /**  Nav To Face Match Page **/
+    var base64Image = ImageToBase64Converter(apiKey).execute(imageUrl).get()
+    val sharedPreferences = reactApplicationContext.getSharedPreferences("FaceMatch",
+     Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    editor.putString("Base64SecondImage", base64Image)
+    editor.apply()
+    val intent = Intent(reactApplicationContext, FaceMatchActivity::class.java)
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    intent.putExtra("holdHandColor", environmentalConditions.HoldHandColor)
+    intent.putExtra("processingColor", environmentalConditions.CustomColor)
+    intent.putExtra("showCountDown", showCountDown)
+    currentActivity?.startActivity(intent)
+  }
 
   override fun onAssentifySdkInitError(message: String) {
-    val eventResultMap =
-        Arguments.createMap().apply { putBoolean("assentifySdkInitSuccess", false) }
-    sendEvent("AppResult", eventResultMap)
-    showErrorMessage(message)
+    mainHandler.post {
+      val eventResultMap = Arguments.createMap().apply {
+        putBoolean("assentifySdkInitSuccess", false)
+      }
+      sendEvent("AppResult", eventResultMap)
+    }
   }
 
   override fun onAssentifySdkInitSuccess(configModel: ConfigModel) {
     mainHandler.post {
       try {
         val documentCaptureStepModelPreferences =
-            reactApplicationContext.getSharedPreferences(
-                "DocumentCaptureStepModel",
-                Context.MODE_PRIVATE
-            )
+          reactApplicationContext.getSharedPreferences(
+            "DocumentCaptureStepModel",
+            Context.MODE_PRIVATE
+          )
         documentCaptureStepModelPreferences.edit().clear().apply()
 
         val sharedPreferences =
-            reactApplicationContext.getSharedPreferences("StepDefinitions", Context.MODE_PRIVATE)
+          reactApplicationContext.getSharedPreferences("StepDefinitions", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         val gson = Gson()
         val json: String = gson.toJson(configModel.stepDefinitions)
@@ -255,30 +256,19 @@ class AssentifySdkModule(context: ReactApplicationContext) :
       val mapData = readableMapToMap(data!!)
 
       val sharedDefinitions =
-          reactApplicationContext.getSharedPreferences("BlockLoaders", Context.MODE_PRIVATE)
+        reactApplicationContext.getSharedPreferences("BlockLoaders", Context.MODE_PRIVATE)
       val instanceHashStr = sharedDefinitions.getString("instanceHash", "")!!
-      val previewURLStr = sharedDefinitions.getString("previewURL", "")!!
 
-      Log.wtf("instanceHash", instanceHashStr)
-
-      val eventResultMap =
-      Arguments.createMap().apply {
-        putBoolean("SubmitDataRequest", true)
-        putBoolean("SubmitDataResponse", false)
-        putString("instanceHash", instanceHashStr)
-      }
-      val result = Arguments.createMap().apply { putMap("SubmitData", eventResultMap) }
-      sendEvent("EventResult", result)
 
       var wrapUp: SubmitRequestModel? = null
       var blockLoader: SubmitRequestModel? = null
 
       val sharedStepDefinitions =
-          reactApplicationContext.getSharedPreferences("StepDefinitions", Context.MODE_PRIVATE)
+        reactApplicationContext.getSharedPreferences("StepDefinitions", Context.MODE_PRIVATE)
       val gson = Gson()
       val json: String = sharedStepDefinitions.getString("Steps", "")!!
       val steps: List<StepDefinitions>? =
-          gson.fromJson(json, object : TypeToken<List<StepDefinitions>>() {}.type)
+        gson.fromJson(json, object : TypeToken<List<StepDefinitions>>() {}.type)
 
       steps!!.forEach { item ->
         // ** WrapUp *//
@@ -329,30 +319,30 @@ class AssentifySdkModule(context: ReactApplicationContext) :
 
       // ** Doc *//
       val sharedStepDefinitionsDoc =
-          reactApplicationContext.getSharedPreferences(
-              "DocumentCaptureStepModel",
-              Context.MODE_PRIVATE
-          )
+        reactApplicationContext.getSharedPreferences(
+          "DocumentCaptureStepModel",
+          Context.MODE_PRIVATE
+        )
       val gsonSharedStepDefinitionsDoc = Gson()
       val jsonSharedStepDefinitionsDoc: String =
-          sharedStepDefinitionsDoc.getString("DocumentCaptureStep", "")!!
+        sharedStepDefinitionsDoc.getString("DocumentCaptureStep", "")!!
       val sharedStepDefinitionsStepDoc: SubmitRequestModel =
-          gsonSharedStepDefinitionsDoc.fromJson(
-              jsonSharedStepDefinitionsDoc,
-              object : TypeToken<SubmitRequestModel>() {}.type
-          )
+        gsonSharedStepDefinitionsDoc.fromJson(
+          jsonSharedStepDefinitionsDoc,
+          object : TypeToken<SubmitRequestModel>() {}.type
+        )
 
       // ** Face *//
       val sharedStepDefinitionsFace =
-          reactApplicationContext.getSharedPreferences("FaceMatchStepModel", Context.MODE_PRIVATE)
+        reactApplicationContext.getSharedPreferences("FaceMatchStepModel", Context.MODE_PRIVATE)
       val gsonSharedStepDefinitionsFace = Gson()
       val jsonSharedStepDefinitionsFace: String =
-          sharedStepDefinitionsFace.getString("FaceMatchStep", "")!!
+        sharedStepDefinitionsFace.getString("FaceMatchStep", "")!!
       val sharedStepDefinitionsStepFace: SubmitRequestModel =
-          gsonSharedStepDefinitionsFace.fromJson(
-              jsonSharedStepDefinitionsFace,
-              object : TypeToken<SubmitRequestModel>() {}.type
-          )
+        gsonSharedStepDefinitionsFace.fromJson(
+          jsonSharedStepDefinitionsFace,
+          object : TypeToken<SubmitRequestModel>() {}.type
+        )
 
       var submitRequestList: MutableList<SubmitRequestModel> = mutableListOf()
       submitRequestList.add(sharedStepDefinitionsStepDoc)
@@ -369,25 +359,18 @@ class AssentifySdkModule(context: ReactApplicationContext) :
   /** Submit Data Functions */
   override fun onSubmitError(message: String) {
     val eventResultMap =
-        Arguments.createMap().apply {
-          putBoolean("SubmitDataRequest", false)
-          putBoolean("SubmitDataResponse", true)
-          putBoolean("success", false)
-          putString("error_message", message)
-        }
-    val result = Arguments.createMap().apply { putMap("SubmitData", eventResultMap) }
-    sendEvent("EventResult", result)
+      Arguments.createMap().apply {
+        putBoolean("success", false)
+      }
+    sendEvent("SubmitResult", eventResultMap)
   }
 
   override fun onSubmitSuccess(message: String) {
-    val eventResultMap = Arguments.createMap().apply {
-      putBoolean("SubmitDataRequest", false)
-      putBoolean("SubmitDataResponse", true)
-      putBoolean("success", true)
-      putString("success_message", "")
-    }
-    val result = Arguments.createMap().apply { putMap("SubmitData", eventResultMap) }
-    sendEvent("EventResult", result)
+    val eventResultMap =
+      Arguments.createMap().apply {
+        putBoolean("success", true)
+      }
+    sendEvent("SubmitResult", eventResultMap)
   }
 
   fun getCurrentDateTimeUTC(): String {

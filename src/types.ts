@@ -23,13 +23,32 @@ export interface Assentify {
     storeImageStream?: boolean,
     saveCapturedVideoID?: boolean,
     saveCapturedVideoFace?: boolean,
-    ENV_BRIGHTNESS_HIGH_THRESHOLD?: number,
-    ENV_BRIGHTNESS_LOW_THRESHOLD?: number,
-    ENV_PREDICTION_LOW_PERCENTAGE?: number,
-    ENV_PREDICTION_HIGH_PERCENTAGE?: number,
     ENV_CustomColor?: string,
-    ENV_HoldHandColor?: string
+    enableDetect?: boolean,
+    enableGuide?: boolean,
   ) => void;
+
+  startScanPassport: (
+    language: Language,
+    ) => void;
+
+
+  startScanOther: (
+    language: Language,
+    ) => void;
+
+
+ startScanIDCard:(kycDocumentDetailsList: KycDocumentDetails[],language: Language,flippingCard: boolean) => void;
+
+  startFaceMatch: (
+   imageUrl: String,
+   showCountDown: boolean
+    ) => void;
+
+
+
+  submitData:(dataMap: Map<string, string>)=> void;
+
 }
 
 export type MrzFields = {

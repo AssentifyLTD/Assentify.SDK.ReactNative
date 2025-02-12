@@ -12,7 +12,7 @@ const JsonParserFaceMatch = (jsonString: string): FaceExtractedModel => {
   const isLive = !!jsonObject?.isLive;
   const identificationDocumentCapture =
     jsonObject?.identificationDocumentCapture as IdentificationDocumentCapture;
-  const percentageMatch = Number(jsonObject?.PercentageMatch) ?? 0;
+  const percentageMatch = Number(jsonObject?.percentageMatch) ?? 0;
 
   return {
     outputProperties,

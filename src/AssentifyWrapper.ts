@@ -7,6 +7,8 @@ const LINKING_ERROR =
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
 
+const { NativeAssentifySdk } = NativeModules;
+
 const AssentifySdk = NativeModules.NativeAssentifySdk
   ? NativeModules.NativeAssentifySdk
   : new Proxy(
@@ -19,6 +21,7 @@ const AssentifySdk = NativeModules.NativeAssentifySdk
     );
 
 const AssentifyWrapper = {
+ /// Initialize
   initialize: function (
     apiKey: string,
     tenantIdentifier: string,
@@ -30,12 +33,7 @@ const AssentifyWrapper = {
     storeImageStream?: boolean,
     saveCapturedVideoID?: boolean,
     saveCapturedVideoFace?: boolean,
-    ENV_BRIGHTNESS_HIGH_THRESHOLD?: number,
-    ENV_BRIGHTNESS_LOW_THRESHOLD?: number,
-    ENV_PREDICTION_LOW_PERCENTAGE?: number,
-    ENV_PREDICTION_HIGH_PERCENTAGE?: number,
     ENV_CustomColor?: string,
-    ENV_HoldHandColor?: string,
     enableDetect?: boolean,
     enableGuide?: boolean
   ) {
@@ -59,12 +57,7 @@ const AssentifyWrapper = {
             storeImageStream ?? true,
             saveCapturedVideoID ?? true,
             saveCapturedVideoFace ?? true,
-            ENV_BRIGHTNESS_HIGH_THRESHOLD ?? 500.0,
-            ENV_BRIGHTNESS_LOW_THRESHOLD ?? 0.0,
-            ENV_PREDICTION_LOW_PERCENTAGE ?? 50.0,
-            ENV_PREDICTION_HIGH_PERCENTAGE ?? 100.0,
-            ENV_CustomColor ?? '#ffffff',
-            ENV_HoldHandColor ?? '#f5a103',
+            ENV_CustomColor ?? '#f5a103',
             enableDetect ?? true,
             enableGuide ?? true
           );
@@ -111,6 +104,37 @@ const AssentifyWrapper = {
       }
     );
   },
+
+  /// Passport
+   startScanPassport: function (language: Language,){
+      AssentifySdk.startScanPassport(language);
+    },
+
+    /// Other
+    startScanOther: function (language: Language,){
+       AssentifySdk.startScanOtherIDPage(language);
+     },
+
+    /// ID
+    startScanIDCard: function (kycDocumentDetailsList: KycDocumentDetails[],language: Language,flippingCard: boolean){
+       AssentifySdk.startScanIDPage(JSON.stringify(kycDocumentDetailsList),language,flippingCard);
+    },
+
+    /// Face Match
+     startFaceMatch: function (imageUrl: String,showCountDown: boolean){
+           AssentifySdk.startFaceMatch(imageUrl,showCountDown);
+     },
+
+
+     /// Submit Data
+     submitData: function (dataMap:Record<string, string> ){
+          AssentifySdk.submitData(dataMap);
+      }
+
+
+
+
+
 };
 
 export default AssentifyWrapper;

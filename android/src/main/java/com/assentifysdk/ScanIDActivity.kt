@@ -283,17 +283,9 @@ class ScanIDActivity: AppCompatActivity(),
             }
           }
           /** **/
-          var base64Image = ImageToBase64Converter(apiKey).execute(frontModel!!.iDExtractedModel!!.imageUrl).get()
-          val sharedPreferences = reactApplicationContext.getSharedPreferences("FaceMatch", Context.MODE_PRIVATE)
-          val editor = sharedPreferences.edit()
-          editor.putString("Base64SecondImage", base64Image)
-          editor.apply()
-          val intent = Intent(reactApplicationContext, FaceMatchActivity::class.java)
-          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-          intent.putExtra("holdHandColor", holdHandColor)
-          intent.putExtra("processingColor", processingColor)
-          intent.putExtra("showCountDown", showCountDown)
-          reactApplicationContext?.startActivity(intent)
+          runOnUiThread {
+            finish()
+          }
         }else{
           if(order==0){
             frontModel = dataModel;
@@ -348,17 +340,9 @@ class ScanIDActivity: AppCompatActivity(),
           }
         }
         /** **/
-        var base64Image = ImageToBase64Converter(apiKey).execute(dataModel.iDExtractedModel!!.imageUrl).get()
-        val sharedPreferences = reactApplicationContext.getSharedPreferences("FaceMatch", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putString("Base64SecondImage", base64Image)
-        editor.apply()
-        val intent = Intent(reactApplicationContext, FaceMatchActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("holdHandColor", holdHandColor)
-        intent.putExtra("processingColor", processingColor)
-        intent.putExtra("showCountDown", showCountDown)
-        reactApplicationContext?.startActivity(intent)
+        runOnUiThread {
+          finish()
+        }
       }
 
 

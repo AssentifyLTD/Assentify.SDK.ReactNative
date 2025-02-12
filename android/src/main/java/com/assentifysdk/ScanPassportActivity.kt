@@ -254,9 +254,10 @@ class ScanPassportActivity : AppCompatActivity(),
         runOnUiThread {
           scanPassport.stopScanning();
           /** End **/
-          if(!isDone){
-            isDone = true;
-            var base64Image =
+         if(!isDone){
+           isDone = true;
+           finish();
+           /* var base64Image =
               ImageToBase64Converter(apiKey).execute(dataModel.passportExtractedModel!!.imageUrl).get()
             val sharedPreferences =
               reactApplicationContext.getSharedPreferences("FaceMatch", Context.MODE_PRIVATE)
@@ -268,7 +269,7 @@ class ScanPassportActivity : AppCompatActivity(),
             intent.putExtra("holdHandColor", holdHandColor)
             intent.putExtra("processingColor", processingColor)
             intent.putExtra("showCountDown", showCountDown)
-            reactApplicationContext?.startActivity(intent)
+            reactApplicationContext?.startActivity(intent)*/
           }
 
 

@@ -235,7 +235,12 @@ class ScanOtherActivity: AppCompatActivity(),
         }
       }
       /** End **/
-      var base64Image = ImageToBase64Converter(apiKey).execute(dataModel.otherExtractedModel!!.imageUrl).get()
+    runOnUiThread {
+      scanOther.stopScanning();
+      finish()
+    }
+
+   /*   var base64Image = ImageToBase64Converter(apiKey).execute(dataModel.otherExtractedModel!!.imageUrl).get()
     val sharedPreferences =
       reactApplicationContext.getSharedPreferences("FaceMatch", Context.MODE_PRIVATE)
     val editor = sharedPreferences.edit()
@@ -246,7 +251,7 @@ class ScanOtherActivity: AppCompatActivity(),
     intent.putExtra("holdHandColor", holdHandColor)
     intent.putExtra("processingColor", processingColor)
     intent.putExtra("showCountDown", showCountDown)
-    reactApplicationContext?.startActivity(intent)
+    reactApplicationContext?.startActivity(intent)*/
 
   }
 
