@@ -21,20 +21,10 @@ import {
   type IdentificationDocumentCapture,
 } from './types';
 import JsonParserPassport from './helpers/parsers/PassportParser';
-import useGlobalStore from './useGlobalStore';
-import './navigator';
-import NavigationContainer from './navigator';
 import { useSub } from './helpers/usePubSub';
-import {
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from '@gorhom/bottom-sheet';
 import JsonParserFaceMatch from './helpers/parsers/FaceMatchParser';
 import JsonParserIdCard from './helpers/parsers/IDCardParser';
 import JsonParserOtherID from './helpers/parsers/OtherIDParser';
-import { onWrongTemplateCallback } from './helpers/callbacks/onWrongTemplate';
-import { DOC_TYPE, PAGES } from './helpers/constants';
-import NavigationService from './helpers/NavigationService';
 
 const { NativeAssentifySdk } = NativeModules;
 
