@@ -38,7 +38,7 @@ const Home = () => {
 
  /// Passport
   const startScanPassport = () => {
-      Assentify.startScanPassport(Language.Arabic);
+      Assentify.startScanPassport(Language.NON);
   };
 
 /// Other

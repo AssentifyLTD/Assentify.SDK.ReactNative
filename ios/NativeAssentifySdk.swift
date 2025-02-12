@@ -29,14 +29,9 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
                           storeImageStream: Bool = true,
                           saveCapturedVideoID: Bool = true,
                           saveCapturedVideoFace: Bool = true,
-                          ENV_BRIGHTNESS_HIGH_THRESHOLD: Float = 500.0,
-                          ENV_BRIGHTNESS_LOW_THRESHOLD: Float = 0.0,
-                          ENV_PREDICTION_LOW_PERCENTAGE: Float = 50.0,
-                          ENV_PREDICTION_HIGH_PERCENTAGE: Float = 100.0,
-                          ENV_CustomColor: String,
-                          ENV_HoldHandColor: String,
-                         enableDetect: Bool = true,
-                         enableGuide: Bool = true
+                          ENV_CustomColor: String = "#f5a103",
+                          enableDetect: Bool = true,
+                          enableGuide: Bool = true
            
                  ) -> Void {
 
@@ -57,12 +52,7 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
         print("storeImageStream: \(Bool(storeImageStream))")
         print("saveCapturedVideoID: \(Bool(saveCapturedVideoID))")
         print("saveCapturedVideoFace: \(Bool(saveCapturedVideoFace))")
-        print("ENV_BRIGHTNESS_HIGH_THRESHOLD: \(Float(ENV_BRIGHTNESS_HIGH_THRESHOLD))")
-        print("ENV_BRIGHTNESS_LOW_THRESHOLD: \(Float(ENV_BRIGHTNESS_LOW_THRESHOLD))")
-        print("ENV_PREDICTION_LOW_PERCENTAGE: \(Float(ENV_PREDICTION_LOW_PERCENTAGE))")
-        print("ENV_PREDICTION_HIGH_PERCENTAGE: \(Float(ENV_PREDICTION_HIGH_PERCENTAGE))")
         print("ENV_CustomColor: \(ENV_CustomColor)")
-        print("ENV_HoldHandColor: \(ENV_HoldHandColor)")
         print("enableDetect: \(enableDetect)")
         print("enableGuide: \(enableGuide)")
 
@@ -76,19 +66,19 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
 
         UserDefaults.standard.set(instanceHash, forKey:"instanceHash")
         // UserDefaults.standard.set(previewURL, forKey:"previewURL")
-
+   
         let environmentalConditions = EnvironmentalConditions(
             enableDetect: enableDetect, enableGuide: enableGuide,
-            BRIGHTNESS_HIGH_THRESHOLD: ENV_BRIGHTNESS_HIGH_THRESHOLD,
-            BRIGHTNESS_LOW_THRESHOLD: ENV_BRIGHTNESS_LOW_THRESHOLD,
-            PREDICTION_LOW_PERCENTAGE: ENV_PREDICTION_LOW_PERCENTAGE,
-            PREDICTION_HIGH_PERCENTAGE: ENV_PREDICTION_HIGH_PERCENTAGE,
-            CustomColor: ENV_CustomColor,
-            HoldHandColor: ENV_HoldHandColor
+            BRIGHTNESS_HIGH_THRESHOLD: 500.0,
+            BRIGHTNESS_LOW_THRESHOLD: 0.0,
+            PREDICTION_LOW_PERCENTAGE: 50.0,
+            PREDICTION_HIGH_PERCENTAGE: 100.0,
+            CustomColor:  "#ffffff",
+            HoldHandColor: ENV_CustomColor
         )
 
-        self.holdHandColor = ENV_HoldHandColor;
-        self.processingColor = ENV_CustomColor;
+        self.holdHandColor = ENV_CustomColor;
+        self.processingColor = "#ffffff";
         
 
         self.assentifySdk = AssentifySdk(
@@ -165,18 +155,18 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
             "onSend",
             "onError",
             "onWrongTemplate",
-            "onBackClick"
+            "onBackClick",
+            "SubmitResult"
         ]
     }
 
 
-    func navigateToPassportController(language: String,
-                                      showCountDown: Bool ) {
+    func navigateToPassportController(language: String) {
         DispatchQueue.main.async {
 
             self.timeStarted =  self.getTimeUTC();
             if let currentViewController = UIViewController.currentViewController {
-                let viewController = PassportController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self,holdHandColor:self.holdHandColor!,processingColor: self.processingColor!,language: language,showCountDown: showCountDown,apiKey:  self.apiKey!)
+                let viewController = PassportController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self,holdHandColor:self.holdHandColor!,processingColor: self.processingColor!,language: language,showCountDown: true,apiKey:  self.apiKey!)
                 viewController.modalPresentationStyle = .fullScreen
                 currentViewController.present(viewController, animated: true, completion: nil)
             }
@@ -184,12 +174,11 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
     }
 
 
-    func navigateToOtherController(language: String,
-                                   showCountDown: Bool ) {
+    func navigateToOtherController(language: String ) {
         DispatchQueue.main.async {
             self.timeStarted =  self.getTimeUTC();
             if let currentViewController = UIViewController.currentViewController {
-                let viewController = OtherController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self,holdHandColor:self.holdHandColor!,processingColor: self.processingColor!,language: language,showCountDown: showCountDown,apiKey:   self.apiKey!)
+                let viewController = OtherController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self,holdHandColor:self.holdHandColor!,processingColor: self.processingColor!,language: language,showCountDown: true,apiKey:   self.apiKey!)
                 viewController.modalPresentationStyle = .fullScreen
                 currentViewController.present(viewController, animated: true, completion: nil)
             }
@@ -197,7 +186,7 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
     }
 
 
-    func navigateToIDCardController(jsonStringKycDocumentDetails: String,language: String,flippingCard:Bool,showCountDown:Bool) {
+    func navigateToIDCardController(jsonStringKycDocumentDetails: String,language: String,flippingCard:Bool) {
         if(jsonStringKycDocumentDetails.isEmpty) {
             return;
         }
@@ -206,47 +195,66 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
         DispatchQueue.main.async {
             self.timeStarted =  self.getTimeUTC();
             if let currentViewController = UIApplication.shared.keyWindow?.rootViewController {
-                let viewController = IDCardController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self,holdHandColor: self.holdHandColor!,processingColor: self.processingColor!,kycDocumentDetails: kycDocumentDetails,language:language,flippingCard: flippingCard,titleID:self.getIdTitle(kycDocumentDetails:kycDocumentDetails ), showCountDown: showCountDown,apiKey:   self.apiKey!)
+                let viewController = IDCardController(assentifySdk: self.assentifySdk!,nativeAssentifySdk: self,holdHandColor: self.holdHandColor!,processingColor: self.processingColor!,kycDocumentDetails: kycDocumentDetails,language:language,flippingCard: flippingCard,titleID:self.getIdTitle(kycDocumentDetails:kycDocumentDetails ), showCountDown: true,apiKey:   self.apiKey!)
                               viewController.modalPresentationStyle = .fullScreen
                               currentViewController.present(viewController, animated: true, completion: nil)
                           }
         }
     }
 
+    
+    func navigateToFaceMatchontroller(imageUrl: String ,showCountDown:Bool) {
+        DispatchQueue.main.async {
+            let imageDocUrl = URL(string: imageUrl)
+            self.imageToBase64(from: imageDocUrl!) { base64String in
+                DispatchQueue.main.async {
+                    if let currentViewController = UIViewController.currentViewController {
+                        let viewController = FaceMAtchController(assentifySdk: self.assentifySdk!,
+                                                                 nativeAssentifySdk: self,
+                                                                 holdHandColor: self.holdHandColor!,
+                                                                 processingColor: self.processingColor!,
+                                                                 secondImage:base64String!,
+                                                                 showCountDown: showCountDown
+                                                                )
+                        viewController.modalPresentationStyle = .fullScreen
+                        currentViewController.present(viewController, animated: true, completion: nil)
+                    }
+                }
+                
+            }
+            
+        }
+    }
 
     @objc
-    func startScanPassport(_ language: String,
-                           showCountDown: Bool ) {
+    func startScanPassport(_ language: String ) {
         /**  Nav To Passport Scan Page **/
-        navigateToPassportController(language: language, showCountDown: showCountDown)
+        navigateToPassportController(language: language)
     }
 
     @objc
-    func startScanOtherIDPage(_ language: String,
-                              showCountDown: Bool ) {
+    func startScanOtherIDPage(_ language: String) {
         /**  Nav To Other Scan Page **/
-        navigateToOtherController(language: language, showCountDown: showCountDown);
+        navigateToOtherController(language: language);
     }
 
     @objc
-    func startScanIDPage(_ kycDocumentDetails: String ,language: String,flippingCard:Bool,
-                         showCountDown: Bool ) {
-        navigateToIDCardController(jsonStringKycDocumentDetails: kycDocumentDetails,language:language,flippingCard:flippingCard,showCountDown:showCountDown)
+    func startScanIDPage(_ kycDocumentDetails: String ,language: String,flippingCard:Bool) {
+        navigateToIDCardController(jsonStringKycDocumentDetails: kycDocumentDetails,language:language,flippingCard:flippingCard)
     }
+    
+    @objc
+    func startFaceMatch(_ imageUrl: String ,showCountDown:Bool) {
+        navigateToFaceMatchontroller(imageUrl: imageUrl,showCountDown:showCountDown)
+    }
+    
+    
 
     @objc
     func submitData(_ data: [String: Any]) {
 
         DispatchQueue.main.async {
             let instanceHashValue = UserDefaults.standard.string(forKey: "instanceHash") ?? ""
-
-            let eventResultMap: [String: Any]  =   [
-                "SubmitDataRequest": true,
-                "SubmitDataResponse": false,
-                "instanceHash":instanceHashValue,
-            ]
-            let result: [String: Any] =  ["SubmitData": eventResultMap]
-            self.sendEvent(withName: "EventResult",body : result)
 
             var submitRequestModel : [SubmitRequestModel] = []
             var extractedInformationWrapUp: [String: String] = [:]
@@ -311,7 +319,7 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
                             extractedInformationBlockLoader[property.key] = self.timeStarted;
                         }
                         if (property.key.contains(BlockLoaderKeys.UserAgent)) {
-                            extractedInformationBlockLoader[property.key] = "iOS User Agent Test";
+                            extractedInformationBlockLoader[property.key] = "SDK";
                         }
                         if (property.key.contains(BlockLoaderKeys.InstanceHash)) {
                             extractedInformationBlockLoader[property.key] =  self.configModel?.instanceHash
@@ -320,7 +328,7 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
                         if (property.key.contains(BlockLoaderKeys.interactionID)) {
                             extractedInformationBlockLoader[property.key] = self.configModel?.instanceId
                         }
-                        if data.isEmpty {
+                        if !data.isEmpty {
                             for (keyData, valueData) in data {
                                 if property.key.contains(keyData) {
                                     extractedInformationBlockLoader[property.key] = String(describing: valueData)
@@ -339,7 +347,6 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
 
             })
 
-            print("submitRequestModel")
             submitRequestModel.forEach { item in
                 print(item.stepDefinition)
                 print(item.extractedInformation)
@@ -352,31 +359,20 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
     }
 
     func onSubmitError(message: String) {
-        print("onSubmitError: %@", message)
         DispatchQueue.main.async {
             let eventResultMap: [String: Any]  =   [
-                "SubmitDataRequest": false,
-                "SubmitDataResponse": true,
                 "success": false,
-                "error_message": message
             ]
-            let result: [String: Any] =  ["SubmitData": eventResultMap]
-            self.sendEvent(withName: "EventResult",body : result)
-
+            self.sendEvent(withName: "SubmitResult",body : eventResultMap)
         }
     }
 
     func onSubmitSuccess() {
-        print("onSubmitSuccess")
         DispatchQueue.main.async {
             let eventResultMap: [String: Any]  =   [
-                "SubmitDataRequest": false,
-                "SubmitDataResponse": true,
                 "success": true,
-                "success_message": ""
             ]
-            let result: [String: Any] =  ["SubmitData": eventResultMap]
-            self.sendEvent(withName: "EventResult",body : result)
+            self.sendEvent(withName: "SubmitResult",body : eventResultMap)
         }
     }
 
@@ -421,7 +417,30 @@ class NativeAssentifySdk: RCTEventEmitter  ,AssentifySdkDelegate , SubmitDataDel
         return title
     }
 
-
+    func imageToBase64(from url: URL, completion: @escaping (String?) -> Void) {
+          
+          var request = URLRequest(url: url)
+          
+          let headers = ["X-Api-Key": self.apiKey]
+          
+          for (headerField, headerValue) in headers {
+              request.setValue(headerValue, forHTTPHeaderField: headerField)
+          }
+          
+          let task = URLSession.shared.dataTask(with: request) { data, response, error in
+              guard let imageData = data, error == nil else {
+                  print("Failed to download image from URL: \(error?.localizedDescription ?? "Unknown error")")
+                  completion(nil)
+                  return
+              }
+              
+              let base64String = imageData.base64EncodedString()
+              
+              completion(base64String)
+          }
+          
+          task.resume()
+      }
 }
 
 extension UIViewController {
@@ -435,5 +454,7 @@ extension UIViewController {
         return viewController
     }
 }
+
+
 
 

@@ -173,21 +173,9 @@ class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControll
                  if let outputProperties = try? JSONSerialization.data(withJSONObject: self.outputResultProperties, options: []) {
                      UserDefaults.standard.set(outputProperties, forKey: "OutputPropertiesDoc")
                  }
-                 if let imageDocUrl = URL(string: self.imageUrl!) {
-                     self.imageToBase64(from: imageDocUrl) { base64String in
-                         DispatchQueue.main.async {
-                             if let currentViewController = UIViewController.currentViewController {
-                                 let viewController = FaceMAtchController(assentifySdk: self.assentifySdk!,
-                                                                          nativeAssentifySdk: self.nativeAssentifySdk,
-                                                                          holdHandColor: self.holdHandColor,
-                                                                          processingColor: self.processingColor,
-                                                                          secondImage:base64String!,showCountDown: self.showCountDown,delegate: self)
-                                 viewController.modalPresentationStyle = .fullScreen
-                                 currentViewController.present(viewController, animated: true, completion: nil)
-                             }}
-                     }
-                 }
-                 
+                 DispatchQueue.main.async {
+                 self.dismiss(animated: false)
+             }
     
                  
              }else{
@@ -315,30 +303,7 @@ class IDCardController: UIViewController ,ScanIDCardDelegate , ChildViewControll
 
     }
 
-    func imageToBase64(from url: URL, completion: @escaping (String?) -> Void) {
-          
-          var request = URLRequest(url: url)
-          
-          let headers = ["X-Api-Key": self.apiKey]
-          
-          for (headerField, headerValue) in headers {
-              request.setValue(headerValue, forHTTPHeaderField: headerField)
-          }
-          
-          let task = URLSession.shared.dataTask(with: request) { data, response, error in
-              guard let imageData = data, error == nil else {
-                  print("Failed to download image from URL: \(error?.localizedDescription ?? "Unknown error")")
-                  completion(nil)
-                  return
-              }
-              
-              let base64String = imageData.base64EncodedString()
-              
-              completion(base64String)
-          }
-          
-          task.resume()
-      }
+   
 
 
 

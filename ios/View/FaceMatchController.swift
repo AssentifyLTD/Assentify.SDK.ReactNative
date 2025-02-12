@@ -9,7 +9,6 @@ class FaceMAtchController: UIViewController ,FaceMatchDelegate
 
 
 
-    weak var delegate: ChildViewControllerDelegate?
     private var assentifySdk:AssentifySdk?;
     private var secondImage:String = "";
     private var nativeAssentifySdk:NativeAssentifySdk?;
@@ -21,13 +20,12 @@ class FaceMAtchController: UIViewController ,FaceMatchDelegate
     private var processingColor: String;
     private var showCountDown: Bool = true;
     
-    init(assentifySdk: AssentifySdk, nativeAssentifySdk:NativeAssentifySdk?,holdHandColor: String,processingColor: String,secondImage:String,showCountDown:Bool,delegate:ChildViewControllerDelegate) {
+    init(assentifySdk: AssentifySdk, nativeAssentifySdk:NativeAssentifySdk?,holdHandColor: String,processingColor: String,secondImage:String,showCountDown:Bool) {
               self.assentifySdk = assentifySdk
               self.holdHandColor = holdHandColor
               self.processingColor = processingColor
         self.secondImage = secondImage
         self.nativeAssentifySdk = nativeAssentifySdk
-        self.delegate = delegate
               self.showCountDown = showCountDown
               super.init(nibName: nil, bundle: nil)
           }
@@ -148,11 +146,7 @@ class FaceMAtchController: UIViewController ,FaceMatchDelegate
         triggerCompleteEvent(eventName:"onComplete",dataModel:dataModel.faceExtractedModel)
 
         DispatchQueue.main.async {
-            if let currentViewController = UIViewController.currentViewController {
-                self.delegate?.dismissParentViewController()
-                currentViewController.dismiss(animated: false, completion: nil)
-
-            }
+            self.dismiss(animated: false)
         }
     }
 
