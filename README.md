@@ -1,4 +1,4 @@
-# react-native-assentify-sdk
+# assentify-sdk-react-native
 
 
 This React Native package provides integration with Assentify's services, allowing developers to incorporate Assentify functionalities seamlessly into their React Native applications.
@@ -20,9 +20,9 @@ With a focus on cutting-edge technologies such as machine learning, natural lang
 
 To install the Assentify React Native package, simply add it to your project:
 
-npm install react-native-assentify-sdk
+npm install assentify-sdk-react-native
 # or
-yarn add react-native-assentify-sdk
+yarn add assentify-sdk-react-native
 
 ## Installation Android
 **Permissions**

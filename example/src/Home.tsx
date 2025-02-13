@@ -1,8 +1,8 @@
 import { View, StyleSheet, Button, DeviceEventEmitter } from 'react-native';
 import React, { useEffect ,useState} from 'react';
 
-import { Assentify , Language } from 'react-native-assentify-sdk';
-import { PassportExtractedModel} from 'react-native-assentify-sdk';
+import { Assentify , Language } from 'assentify-sdk-react-native';
+import { PassportExtractedModel} from 'assentify-sdk-react-native';
 
 
 

@@ -47,9 +47,9 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "react-native-assentify-sdk/issues"
+    "url": "https://github.com/AssentifyLTD/Assentify.SDK.ReactNative/issues"
   },
-  "homepage": "react-native-assentify-sdk#readme",
+  "homepage": "assentify-sdk-react-native#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
