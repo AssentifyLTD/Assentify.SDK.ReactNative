@@ -1,8 +1,10 @@
 import { NativeModules, Platform, Alert, Linking } from 'react-native';
 import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import { type LanguageCode } from './Language';
+import { type KycDocumentDetails } from './types';
 
 const LINKING_ERROR =
-  `The package 'react-native-react-native-assentify-sdk' doesn't seem to be linked. Make sure: \n\n` +
+  `The package 'assentify-sdk-react-native-react-native' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
@@ -106,17 +108,17 @@ const AssentifyWrapper = {
   },
 
   /// Passport
-   startScanPassport: function (language: Language,){
+   startScanPassport: function (language: LanguageCode,){
       AssentifySdk.startScanPassport(language);
     },
 
     /// Other
-    startScanOther: function (language: Language,){
+    startScanOther: function (language: LanguageCode,){
        AssentifySdk.startScanOtherIDPage(language);
      },
 
     /// ID
-    startScanIDCard: function (kycDocumentDetailsList: KycDocumentDetails[],language: Language,flippingCard: boolean){
+    startScanIDCard: function (kycDocumentDetailsList: KycDocumentDetails[],language: LanguageCode,flippingCard: boolean){
        AssentifySdk.startScanIDPage(JSON.stringify(kycDocumentDetailsList),language,flippingCard);
     },
 

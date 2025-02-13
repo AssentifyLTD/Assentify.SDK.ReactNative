@@ -18,3 +18,5 @@ export const Language = {
   Uyghur: "ug",
   NON: "NON",
 };
+
+export type LanguageCode = typeof Language[keyof typeof Language];

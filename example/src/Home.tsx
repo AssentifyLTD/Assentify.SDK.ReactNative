@@ -2,7 +2,13 @@ import { View, StyleSheet, Button, DeviceEventEmitter } from 'react-native';
 import React, { useEffect ,useState} from 'react';
 
 import { Assentify , Language } from 'assentify-sdk-react-native';
-import { PassportExtractedModel} from 'assentify-sdk-react-native';
+import { type PassportExtractedModel} from 'assentify-sdk-react-native';
+import { type TemplatesByCountry} from 'assentify-sdk-react-native';
+import { type OtherExtractedModel} from 'assentify-sdk-react-native';
+import { type IDExtractedModel} from 'assentify-sdk-react-native';
+import { type FaceExtractedModel} from 'assentify-sdk-react-native';
+import { type Templates} from 'assentify-sdk-react-native';
+import { type KycDocumentDetails} from 'assentify-sdk-react-native';
 
 
 
@@ -15,7 +21,7 @@ const instanceHash =
  let imageUrl = '';
 const Home = () => {
   const [isSdkInitialized, setIsSdkInitialized] = useState(false);
-  const [kycDocumentDetailsList, setKycDocumentDetailsList] = useState(null);
+  const [kycDocumentDetailsList, setKycDocumentDetailsList] = useState<KycDocumentDetails[]>([]);
 
  /// Initialize
   const onInitialize = () => {
@@ -38,7 +44,7 @@ const Home = () => {
 
  /// Passport
   const startScanPassport = () => {
-      Assentify.startScanPassport(Language.NON);
+      Assentify.startScanPassport(Language.Arabic);
   };
 
 /// Other
@@ -48,7 +54,9 @@ const Home = () => {
 
 /// IDCard
   const startScanIDCard = () => {
-      Assentify.startScanIDCard(kycDocumentDetailsList,Language.English ,true); // kycDocumentDetailsList - flippingCard
+  if (kycDocumentDetailsList) {
+    Assentify.startScanIDCard(kycDocumentDetailsList,Language.English ,true); // kycDocumentDetailsList - flippingCard
+   }
   };
 
 
@@ -73,9 +81,9 @@ const Home = () => {
         (AppResult) => {
         if (AppResult.status === true) {
           const templates = AppResult.templates as TemplatesByCountry[];
-          const lebanonTemplates = templates.find(template => template.name === 'Lebanon').templates;
-          const civilID = lebanonTemplates.find(template => template.kycDocumentType === 'Lebanese Civil ID');
-          setKycDocumentDetailsList(civilID.kycDocumentDetails);
+          const lebanonTemplates = templates.find((template:TemplatesByCountry) => template.name === 'Lebanon')?.templates ?? [];
+          const civilID = lebanonTemplates.find((template:Templates) => template.kycDocumentType === 'Lebanese Civil ID');
+          setKycDocumentDetailsList(civilID?.kycDocumentDetails?? []);
           setIsSdkInitialized(true);
         }
       }
@@ -91,7 +99,7 @@ const Home = () => {
         console.log("ExampleEvents Passport: ",passportExtractedModel.outputProperties)
 
         ///
-        imageUrl = passportExtractedModel.imageUrl;
+        imageUrl = passportExtractedModel.imageUrl?? '';
       }
     );
 
@@ -118,7 +126,7 @@ const Home = () => {
         console.log("ExampleEvents IDCard: ",iDExtractedModel.outputProperties)
         ///
          if (imageUrl === '') {
-           imageUrl = iDExtractedModel.imageUrl;
+           imageUrl = iDExtractedModel.imageUrl?? '';
          }
       }
     );

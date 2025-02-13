@@ -1,3 +1,6 @@
+import { type LanguageCode } from './Language';
+
+
 export interface AssentifySdkCallback {
   onAssentifySdkInitError: (message: string) => string;
   onAssentifySdkInitSuccess: (stepDefinitions: any[]) => string;
@@ -29,16 +32,16 @@ export interface Assentify {
   ) => void;
 
   startScanPassport: (
-    language: Language,
+    language: LanguageCode,
     ) => void;
 
 
   startScanOther: (
-    language: Language,
+    language: LanguageCode,
     ) => void;
 
 
- startScanIDCard:(kycDocumentDetailsList: KycDocumentDetails[],language: Language,flippingCard: boolean) => void;
+ startScanIDCard:(kycDocumentDetailsList: KycDocumentDetails[],language: LanguageCode,flippingCard: boolean) => void;
 
   startFaceMatch: (
    imageUrl: String,

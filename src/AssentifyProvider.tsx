@@ -17,11 +17,11 @@ import {
   type FaceExtractedModel,
   type IDExtractedModel,
   type OtherExtractedModel,
+  type TemplatesByCountry,
   FAILED_RESULT,
   type IdentificationDocumentCapture,
 } from './types';
 import JsonParserPassport from './helpers/parsers/PassportParser';
-import { useSub } from './helpers/usePubSub';
 import JsonParserFaceMatch from './helpers/parsers/FaceMatchParser';
 import JsonParserIdCard from './helpers/parsers/IDCardParser';
 import JsonParserOtherID from './helpers/parsers/OtherIDParser';
@@ -68,75 +68,75 @@ const AssentifyProvider = () => {
     });
 
    // General
-   const onSendEvent = emitter.addListener('onSend', (result) => {
+   const onSendEvent = emitter.addListener('onSend', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onSend" });
    });
 
-   const onRetryEvent = emitter.addListener('onRetry', (result) => {
+   const onRetryEvent = emitter.addListener('onRetry', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onRetry" });
    });
 
-   const onClipPreparationCompleteEvent = emitter.addListener('onClipPreparationComplete', (result) => {
+   const onClipPreparationCompleteEvent = emitter.addListener('onClipPreparationComplete', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onClipPreparationComplete" });
    });
 
-   const onStatusUpdatedEvent = emitter.addListener('onStatusUpdated', (result) => {
+   const onStatusUpdatedEvent = emitter.addListener('onStatusUpdated', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onStatusUpdated" });
    });
 
-   const onUpdatedEvent = emitter.addListener('onUpdated', (result) => {
+   const onUpdatedEvent = emitter.addListener('onUpdated', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onUpdated" });
    });
 
-   const onLivenessUpdateEvent = emitter.addListener('onLivenessUpdate', (result) => {
+   const onLivenessUpdateEvent = emitter.addListener('onLivenessUpdate', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onLivenessUpdate" });
    });
 
-   const onCardDetectedEvent = emitter.addListener('onCardDetected', (result) => {
+   const onCardDetectedEvent = emitter.addListener('onCardDetected', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onCardDetected" });
    });
 
-   const onMrzExtractedEvent = emitter.addListener('onMrzExtracted', (result) => {
+   const onMrzExtractedEvent = emitter.addListener('onMrzExtracted', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onMrzExtracted" });
    });
 
-   const onMrzDetectedEvent = emitter.addListener('onMrzDetected', (result) => {
+   const onMrzDetectedEvent = emitter.addListener('onMrzDetected', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onMrzDetected" });
    });
 
-   const onNoMrzDetectedEvent = emitter.addListener('onNoMrzDetected', (result) => {
+   const onNoMrzDetectedEvent = emitter.addListener('onNoMrzDetected', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onNoMrzDetected" });
    });
 
-   const onFaceDetectedEvent = emitter.addListener('onFaceDetected', (result) => {
+   const onFaceDetectedEvent = emitter.addListener('onFaceDetected', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onFaceDetected" });
    });
 
-   const onNoFaceDetectedEvent = emitter.addListener('onNoFaceDetected', (result) => {
+   const onNoFaceDetectedEvent = emitter.addListener('onNoFaceDetected', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onNoFaceDetected" });
    });
 
-   const onFaceExtractedEvent = emitter.addListener('onFaceExtracted', (result) => {
+   const onFaceExtractedEvent = emitter.addListener('onFaceExtracted', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onFaceExtracted" });
    });
 
-   const onQualityCheckAvailableEvent = emitter.addListener('onQualityCheckAvailable', (result) => {
+   const onQualityCheckAvailableEvent = emitter.addListener('onQualityCheckAvailable', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onQualityCheckAvailable" });
    });
 
-   const onDocumentCapturedEvent = emitter.addListener('onDocumentCaptured', (result) => {
+   const onDocumentCapturedEvent = emitter.addListener('onDocumentCaptured', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onDocumentCaptured" });
    });
 
-   const onDocumentCroppedEvent = emitter.addListener('onDocumentCropped', (result) => {
+   const onDocumentCroppedEvent = emitter.addListener('onDocumentCropped', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onDocumentCropped" });
    });
 
-   const onUploadFailedEvent = emitter.addListener('onUploadFailed', (result) => {
+   const onUploadFailedEvent = emitter.addListener('onUploadFailed', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onUploadFailed" });
    });
 
-   const onWrongTemplate = emitter.addListener('onWrongTemplate', (result) => {
+   const onWrongTemplate = emitter.addListener('onWrongTemplate', (_result) => {
      DeviceEventEmitter.emit('EventResult', { "eventName": "onWrongTemplate" });
    });
 
