@@ -1,89 +1,30 @@
 # react-native-assentify-sdk
 
-React Native module that allows you to use the native Assentify SDK
+
+This React Native package provides integration with Assentify's services, allowing developers to incorporate Assentify functionalities seamlessly into their React Native applications.
+
+## About Assentify
+
+[Assentify](https://assentify.com/home) is a leading provider of advanced AI-driven solutions for businesses across various industries. We specialize in harnessing the power of artificial intelligence to optimize processes, enhance decision-making, and drive innovation.
+
+With a focus on cutting-edge technologies such as machine learning, natural language processing, and computer vision, Assentify empowers organizations to unlock new opportunities and stay ahead in today's rapidly evolving digital landscape.
+
+## Features
+
+- **Integration:** Easily integrate Assentify's AI capabilities into your React Native applications..
+- **Customization:** Tailor the integration to suit your specific requirements and use cases.
+- **Scalability:**  Scale seamlessly as your application grows, with robust support from Assentify's infrastructure.
+- **Security:** Ensure the highest levels of data security and compliance with Assentify's industry-leading standards.
 
 ## Installation
 
-```sh
+To install the Assentify React Native package, simply add it to your project:
+
 npm install react-native-assentify-sdk
-```
-
-```sh
+# or
 yarn add react-native-assentify-sdk
-```
 
-## Usage
-
-```js
-import { Assentify } from 'react-native-assentify-sdk';
-import { View, NativeModules } from 'react-native';
-
-const { AssentifySdk } = NativeModules;
-
-const apiKey = 'YOUR_API_KEY';
-const tenantIdentifier = 'YOUR_TENANT_IDENTIFIER';
-const instanceHash = 'YOUR_INTERACTION';
-
-React.useEffect(() => {
-  const listener = new NativeEventEmitter(AssentifySdk);
-
-  listener.addListener('EventResult', (EventResult) => {
-    console.log('EventResult: ', EventResult);
-  });
-
-  listener.addListener('EventError', (EventError) =>
-    console.log('EventError: ', EventError)
-  );
-
-  return () => {
-    listener.removeAllListeners('EventResult');
-    listener.removeAllListeners('EventError');
-  };
-}, []);
-
-// ... Press to start verification proces
-const onStartVerification = () => {
-  Assentify.initialize(apiKey, tenantIdentifier, instanceHash);
-};
-
-export default function App() {
-  return (
-    <View>
-      // Provider must be added
-      <AssentifyProvider />
-    </View>
-  );
-}
-```
-
-## Compatibility
-
-We only ensure compatibility with a minimum React Native version of 0.73.6
-
-## Integration
-
-### iOS
-
---- Documentation Here ---
-
-```
- yarn install
-
- cd ios && NO_FLIPPER=1 USE_FRAMEWORKS=static pod install && cd ..
-
- yarn example ios
-```
-
-### Android
-
---- Documentation Here ---
-
-```
-yarn install
-
-yarn example android
-```
-
+## Installation Android
 **Permissions**
 
 ```xml
@@ -93,43 +34,32 @@ yarn example android
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.RECORD_AUDIO" />
   <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-
   <uses-feature android:name="android.hardware.camera" />
   <uses-feature android:name="android.hardware.camera.autofocus" />
 ```
-
 **AndroidManifest** Open your AndroidManifest.xml file and add the following activity.
 
 ```xml
 <application>
-      <activity android:name="com.assentifysdk.SplashScreen"/>
-      <activity android:name="com.assentifysdk.IdCapture.DocCaptureConfig"/>
-      <activity android:name="com.assentifysdk.IdCapture.DocCaptureID"/>
-      <activity android:name="com.assentifysdk.IdCapture.DocCaptureIntro"/>
-      <activity android:name="com.assentifysdk.IdCapture.DocCaptureOtherResult"/>
-      <activity android:name="com.assentifysdk.IdCapture.DocCapturePassportResult"/>
-      <activity android:name="com.assentifysdk.IdCapture.DocCaptureIDResult"/>
-      <activity android:name="com.assentifysdk.IdCapture.DocCapturePassport"/>
-      <activity android:name="com.assentifysdk.IdCapture.DocCaptureOther"/>
-      <activity android:name="com.assentifysdk.IdCapture.DocCaptureIDBack"/>
-      <activity android:name="com.assentifysdk.IdCapture.IDCardRotation"/>
-      <activity android:name="com.assentifysdk.FaceMatch.FaceMatchActivity"/>
-      <activity android:name="com.assentifysdk.FaceMatch.FaceMatchResult"/>
-      <activity android:name="com.assentifysdk.ContextAware.ContextAwareSigningActivity"/>
-      <activity android:name="com.assentifysdk.FaceMatch.PdfFullScreen"/>
+  <activity android:name="com.assentifysdk.ScanPassportActivity" android:exported="true" android:noHistory="true" />
+  <activity android:name="com.assentifysdk.ScanOtherActivity" android:exported="true" android:noHistory="true" />
+  <activity android:name="com.assentifysdk.FaceMatchActivity" android:exported="true" android:noHistory="true" />
+  <activity android:name="com.assentifysdk.ScanIDActivity" android:exported="true" android:noHistory="true" />
 </application>
 ```
 
-## Contributing
+## Versions
+**0.0.1**
+- Initial release of the Assentify React Native SDK
+- Core features implemented, including integration with Assentify's AI services
+- Basic scanning and face matching functionalities
+- Support for both iOS and Android platforms
 
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+
+## Author
+
+Assentify, info.assentify@gmail.com
 
 ## License
 
-Copyright (c) 2024 SAL
-
-Proprietary and confidential. This project is confidential and only available to authorized individuals with the permission of the copyright holders.
-
----
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
+AssentifySdk is available under the MIT license. See the LICENSE file for more info.

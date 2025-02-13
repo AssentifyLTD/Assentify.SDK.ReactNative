@@ -1,7 +1,7 @@
 {
-  "name": "react-native-assentify-sdk",
-  "version": "0.0.21",
-  "description": "React Native module that allows you to use the native Assentify SDK",
+  "name": "assentify-sdk-react-native",
+  "version": "0.0.1",
+  "description": "This package provides integration with Assentify's services, allowing developers to incorporate Assentify functionalities seamlessly into their applications.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",
@@ -42,7 +42,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "..react-native-assentify-sdk.git"
+    "url": "https://github.com/AssentifyLTD/Assentify.SDK.ReactNative.git"
   },
   "author": "",
   "license": "MIT",

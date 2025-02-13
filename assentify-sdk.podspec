@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.authors      = package["author"]
 
   s.platforms    = { :ios => min_ios_version_supported }
-  s.source       = { :git => "https://... react-native-assentify-sdk.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/AssentifyLTD/Assentify.SDK.ReactNative.git", :tag => "#{s.version}" }
 
   s.swift_versions = ['5.0', '5.1', '5.2', '5.3', '5.4', '5.5']
 
